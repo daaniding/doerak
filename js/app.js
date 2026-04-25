@@ -38,12 +38,10 @@
   /* === Per-game color theme === */
   const GAME_THEMES = {
     tijdsbom: 'coral', reactietest: 'yellow', mostLikelyTo: 'blush',
-    mostLikelyBomb: 'coral', imposter: 'mint', paranoia: 'ink',
-    drunkocracy: 'coral', hotSeat: 'yellow', twentyone: 'blush',
-    buzz: 'yellow', categorieTimer: 'coral', waterval: 'sky',
-    blindeKeuze: 'mint', regelRoulette: 'yellow', buddy: 'coral',
-    saboteur: 'ink', sociale: 'mint', dubbelPech: 'coral',
-    uitdelen: 'mint', guess5: 'yellow'
+    mostLikelyBomb: 'coral', imposter: 'mint', drunkocracy: 'coral',
+    twentyone: 'blush', buzz: 'yellow', categorieTimer: 'coral',
+    waterval: 'sky', blindeKeuze: 'mint', regelRoulette: 'yellow',
+    buddy: 'coral', dubbelPech: 'coral', uitdelen: 'mint', guess5: 'yellow'
   };
   function setTheme(t) {
     if (t) document.body.setAttribute('data-theme', t);
@@ -93,7 +91,7 @@
     mount(s => {
       s.classList.add('welcome');
       s.appendChild(U.el('div', { class: 'marker', text: 'NL · 18+ · ★' }));
-      s.appendChild(U.el('div', { class: 'marker right', text: '20 GAMES' }));
+      s.appendChild(U.el('div', { class: 'marker right', text: '16 GAMES' }));
 
       // floating decorative SVGs
       ['cup', 'sparkle', 'confetti', 'bottle'].forEach((d, i) => {
@@ -439,8 +437,10 @@
         state.players.forEach(p => {
           list.appendChild(U.el('button', {
             class: 'target-btn', text: p,
-            onClick: () => {
+            onClick: async () => {
               AudioFX.softBeep();
+              const ok = await U.confirm(p, { kicker: 'STEM JE OP DEZE PERSOON?' });
+              if (!ok) return;
               votes[voter] = p;
               tally[p] = (tally[p] || 0) + 1;
               i++; next();

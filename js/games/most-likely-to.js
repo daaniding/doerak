@@ -48,7 +48,12 @@
         players.forEach(p => {
           grid.appendChild(U.el('button', {
             class: 'target-btn', text: p,
-            onClick: () => declare(p)
+            onClick: async () => {
+              AudioFX.softBeep();
+              const ok = await U.confirm(p, { kicker: 'KREEG DEZE DE MEESTE?' });
+              if (!ok) return;
+              declare(p);
+            }
           }));
         });
         body.appendChild(grid);

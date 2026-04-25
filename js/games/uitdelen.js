@@ -27,8 +27,9 @@
       container.innerHTML = '';
       container.appendChild(root);
 
-      body.appendChild(U.el('div', { class: 'kicker orange', text: 'DE BAAS' }));
+      body.appendChild(U.el('div', { class: 'kicker coral', text: 'DE BAAS' }));
       body.appendChild(U.el('div', { class: 'pass-name', text: dealer }));
+      U.turnPopup(dealer, 'DEELT UIT');
       const budgetEl = U.el('div', { class: 'uit-budget', text: BUDGET });
       body.appendChild(budgetEl);
       const list = U.el('div', { class: 'uit-tally' });

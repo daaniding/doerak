@@ -98,9 +98,9 @@
       });
   };
 
-  /* --- Intensity multipliers --- */
+  /* --- Intensity multipliers (bumped — er moet meer gedronken worden) --- */
   U.intensityMultiplier = (intensity) => {
-    return intensity === 'chill' ? 0.7 : intensity === 'heftig' ? 1.4 : 1.0;
+    return intensity === 'chill' ? 0.9 : intensity === 'heftig' ? 1.8 : 1.3;
   };
 
   /* --- Drink instruction builder (THE CORE MECHANIC) ---
@@ -196,6 +196,52 @@
   U.recentlyPicked = (history, candidate, withinN = 4) => {
     const tail = history.slice(-withinN);
     return tail.includes(candidate);
+  };
+
+  /* --- Confirm tap dialog ---
+   * Shows a small overlay: "[name]?" + JA / NEE buttons. Prevents misclicks.
+   * Returns a Promise<bool>. */
+  U.confirm = (label, opts = {}) => {
+    return new Promise((resolve) => {
+      const screen = document.querySelector('.screen');
+      if (!screen) return resolve(true);
+      const overlay = U.el('div', { class: 'confirm-overlay' });
+      const card = U.el('div', { class: 'confirm-card' });
+      card.appendChild(U.el('div', { class: 'kicker coral', style: { alignSelf: 'center' }, text: opts.kicker || 'WEET JE HET ZEKER?' }));
+      card.appendChild(U.el('div', { class: 'confirm-name', text: label }));
+      const row = U.el('div', { class: 'confirm-row' });
+      const no = U.el('button', { class: 'btn ghost', text: 'NEE',
+        onClick: () => { overlay.remove(); resolve(false); } });
+      const yes = U.el('button', { class: 'btn primary', text: 'JA, ZEKER',
+        onClick: () => { overlay.remove(); resolve(true); } });
+      row.appendChild(no); row.appendChild(yes);
+      card.appendChild(row);
+      overlay.appendChild(card);
+      screen.appendChild(overlay);
+    });
+  };
+
+  /* --- "X is aan de beurt" popup ---
+   * Big takeover screen with player name, taps to dismiss.
+   * Returns a Promise that resolves on tap. */
+  U.turnPopup = (name, label = 'IS AAN DE BEURT') => {
+    return new Promise((resolve) => {
+      const screen = document.querySelector('.screen');
+      if (!screen) return resolve();
+      const overlay = U.el('div', { class: 'turn-popup' });
+      const inner = U.el('div', { class: 'turn-popup-inner' });
+      inner.appendChild(U.el('div', { class: 'kicker coral', text: label }));
+      inner.appendChild(U.el('div', { class: 'turn-popup-name', text: name }));
+      inner.appendChild(U.el('div', { class: 'turn-popup-tap', text: 'TAP OM TE STARTEN' }));
+      overlay.appendChild(inner);
+      const dismiss = () => {
+        overlay.classList.add('out');
+        setTimeout(() => { overlay.remove(); resolve(); }, 200);
+      };
+      overlay.addEventListener('click', dismiss);
+      screen.appendChild(overlay);
+      AudioFX.softBeep();
+    });
   };
 
   /* --- Format: 1m23s --- */

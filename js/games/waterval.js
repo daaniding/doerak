@@ -40,11 +40,11 @@
         wrap.appendChild(seat);
       });
       body.appendChild(wrap);
-      const drink = U.buildDrinkInstruction(1, availableDrinks, intensity);
       body.appendChild(U.el('div', { class: 'sociale-reason',
-        html: `<strong>${start}</strong> start. De rest volgt richting de klok. Niemand stopt voor de persoon vóór je.<br><span style="color:var(--ink-cyan)">Basis per persoon: ${drink}</span>` }));
+        html: `<strong>${start}</strong> start. De rest volgt richting de klok. <strong>Niemand stopt</strong> voor de persoon vóór je.` }));
 
-      footer.appendChild(U.el('button', { class: 'btn full', text: 'KLAAR', onClick: () => { AudioFX.beep(); ctx.next(); } }));
+      U.turnPopup(start, 'START DE WATERVAL');
+      footer.appendChild(U.el('button', { class: 'btn full primary', text: 'KLAAR', onClick: () => { AudioFX.beep(); ctx.next(); } }));
     }
   };
 })();

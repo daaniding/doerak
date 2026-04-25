@@ -183,15 +183,16 @@ body[data-theme="blush"]  { --hero: var(--coral-soft); --hero-deep: var(--coral)
   will-change: transform, opacity;
   color: var(--ink);
 }
-.screen.entering { animation: screenIn 360ms var(--ease-pop) both; }
+.screen.entering { animation: screenIn 380ms var(--ease-pop) both; }
 .screen.exiting  { animation: screenOut 220ms var(--ease-out) both; }
 @keyframes screenIn {
-  0%   { transform: translateY(28px) scale(0.96); opacity: 0; }
+  0%   { transform: translateY(36px) scale(0.94); opacity: 0; filter: blur(4px); }
+  60%  { opacity: 1; filter: blur(0); }
   100% { transform: none; opacity: 1; }
 }
 @keyframes screenOut {
   0%   { transform: none; opacity: 1; }
-  100% { transform: translateY(-18px) scale(0.97); opacity: 0; }
+  100% { transform: translateY(-22px) scale(0.96); opacity: 0; filter: blur(3px); }
 }
 
 /* === Type === */
@@ -260,8 +261,8 @@ p { margin: 0; }
   transition: transform 140ms var(--ease-pop), box-shadow 140ms var(--ease-pop), filter 140ms;
   will-change: transform;
 }
-.btn:hover { filter: brightness(1.04); }
-.btn:active { transform: translateY(4px); box-shadow: 0 1px 0 0 var(--ink); }
+.btn:hover { filter: brightness(1.04); transform: translateY(-1px); box-shadow: 0 7px 0 0 var(--ink); }
+.btn:active { transform: translateY(4px); box-shadow: 0 1px 0 0 var(--ink); transition-duration: 80ms; }
 .btn:focus-visible { outline: 4px solid var(--yellow); outline-offset: 4px; }
 .btn[disabled] { opacity: 0.45; cursor: not-allowed; filter: grayscale(0.3); }
 
@@ -473,6 +474,112 @@ input:focus { border-color: var(--coral); }
 
 /* SVG icon defaults */
 .icon { display: block; flex-shrink: 0; }
+
+/* === No-scroll guarantee ===
+ * Game-view content gets overflow:hidden so a single screen always fits.
+ * Heading + body cards use flex-shrink + clamp() to scale down on tight viewports. */
+.gameloop .stage > .game-view { overflow: hidden; }
+
+/* === Confirm tap overlay === */
+.confirm-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(26,22,53,0.78);
+  backdrop-filter: blur(6px);
+  z-index: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s-5);
+  animation: fadeIn 200ms var(--ease-out);
+}
+.confirm-card {
+  background: var(--cream);
+  color: var(--ink);
+  border: 4px solid var(--ink);
+  border-radius: var(--r-lg);
+  padding: var(--s-5);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  text-align: center;
+  width: 100%;
+  max-width: 340px;
+  animation: confirmPop 320ms var(--ease-pop);
+}
+@keyframes confirmPop {
+  0%   { transform: scale(0.6) rotate(-2deg); opacity: 0; }
+  60%  { transform: scale(1.04); opacity: 1; }
+  100% { transform: scale(1) rotate(0); }
+}
+.confirm-name {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 11vw, 60px);
+  line-height: 0.95;
+  color: var(--coral);
+  -webkit-text-stroke: 3px var(--ink);
+  text-shadow: 4px 4px 0 var(--ink);
+  word-break: break-word;
+}
+.confirm-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2); }
+.confirm-row .btn { min-height: 56px; font-size: 18px; }
+
+/* === "X aan de beurt" turn popup === */
+.turn-popup {
+  position: absolute;
+  inset: 0;
+  z-index: 750;
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s-5);
+  cursor: pointer;
+  animation: fadeIn 240ms var(--ease-pop);
+}
+.turn-popup.out { animation: fadeOut 200ms var(--ease-out) forwards; }
+.turn-popup-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--s-3);
+}
+.turn-popup-name {
+  font-family: var(--font-display);
+  font-size: clamp(56px, 18vw, 120px);
+  line-height: 0.92;
+  color: var(--yellow);
+  -webkit-text-stroke: 5px var(--cream);
+  text-shadow: 8px 8px 0 var(--coral);
+  animation: turnPopBounce 600ms var(--ease-pop);
+  word-break: break-word;
+  max-width: 100%;
+}
+@keyframes turnPopBounce {
+  0%   { transform: scale(0.3) rotate(-8deg); opacity: 0; }
+  60%  { transform: scale(1.08) rotate(0); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.turn-popup-tap {
+  font-family: var(--font-body);
+  font-weight: 900;
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  color: var(--cream);
+  opacity: 0.6;
+  text-transform: uppercase;
+  animation: pulseFade 1.5s ease-in-out infinite;
+  margin-top: var(--s-3);
+}
+@keyframes pulseFade {
+  0%, 100% { opacity: 0.6; }
+  50%      { opacity: 1; }
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
