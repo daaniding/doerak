@@ -1,23 +1,24 @@
-/* Buzz — count up, say BUZZ on multiples of 7 or numbers containing 7. */
+/* Juffen — manual play. Group plays Juffen IRL, app records who drank.
+ * Replaces previous Buzz mechanic — app doesn't try to count along.
+ * Each drink registered for promille tracking. */
 (function () {
   window.DOERAK_GAMES = window.DOERAK_GAMES || {};
   window.DOERAK_GAMES.buzz = {
     id: 'buzz',
-    name: 'BUZZ',
-    desc: 'Tel op. Op multiples van 7 of getallen mét 7: zeg BUZZ.',
+    name: 'JUFFEN',
+    desc: 'Speel een potje juffen aan tafel. Tap iemand z\'n naam telkens als ze moeten drinken.',
     long: false,
-    weight: { chill: 0.9, normaal: 1.0, heftig: 1.0 },
+    weight: { chill: 0.7, normaal: 1.0, heftig: 1.2 },
 
     start(container, ctx) {
       const { players, availableDrinks, intensity } = ctx;
-      let count = 1;
-      let turnIdx = U.rand(players.length);
-      const drinkWrong = U.buildDrinkInstruction(2, availableDrinks, intensity);
+      const counts = {};
+      players.forEach(p => counts[p] = 0);
 
       const root = U.el('div', { class: 'game' });
       root.appendChild(U.el('div', { class: 'game-header' },
-        U.el('div', { class: 'gh-name', text: 'BUZZ' }),
-        U.el('div', { class: 'gh-tag', text: 'MULTIPLES VAN 7' })
+        U.el('div', { class: 'gh-name', text: 'JUFFEN' }),
+        U.el('div', { class: 'gh-tag', text: 'TAP WIE DRINKT' })
       ));
       const body = U.el('div', { class: 'game-body' });
       const footer = U.el('div', { class: 'game-footer' });
@@ -25,49 +26,34 @@
       container.innerHTML = '';
       container.appendChild(root);
 
-      const whoEl = U.el('div', { class: 'cat-turn' });
-      const numEl = U.el('div', { class: 'buzz-num' });
-      const rules = U.el('div', { class: 'buzz-rules center', text: 'Multiples 7  •  Bevat een 7  •  ZEG BUZZ' });
-      const actions = U.el('div', { class: 'buzz-actions' });
-      body.appendChild(whoEl); body.appendChild(numEl); body.appendChild(rules); body.appendChild(actions);
+      body.appendChild(U.el('div', { class: 'kicker mint', style: { alignSelf: 'center' }, text: 'SPEEL HET POTJE' }));
+      body.appendChild(U.el('div', { class: 'body-card',
+        html: 'Klassieke juffen. Op multiples van 7 of getallen mét 7: zeg <strong>"juf"</strong>. Foutje? Tap je naam hieronder.' }));
 
-      function update() {
-        whoEl.textContent = players[turnIdx] + ' is aan de beurt';
-        numEl.textContent = count;
+      const list = U.el('div', { class: 'tap-tally' });
+      function refresh() {
+        list.innerHTML = '';
+        players.forEach(p => {
+          const row = U.el('div', { class: 'tap-row', onClick: () => {
+            counts[p]++;
+            ctx.trackDrink(p, 1);
+            AudioFX.softBeep();
+            row.classList.add('flash');
+            setTimeout(() => row.classList.remove('flash'), 240);
+            refresh();
+          }});
+          row.appendChild(U.el('div', { class: 'tap-name', text: p }));
+          row.appendChild(U.el('div', { class: 'tap-count', text: counts[p] || '0' }));
+          list.appendChild(row);
+        });
       }
+      refresh();
+      body.appendChild(list);
 
-      actions.appendChild(U.el('button', {
-        class: 'btn cyan', text: 'GETAL/BUZZ GEZEGD',
-        onClick: () => {
-          AudioFX.softBeep();
-          if (count >= 50) return finish();
-          count++;
-          turnIdx = (turnIdx + 1) % players.length;
-          update();
-        }
+      footer.appendChild(U.el('button', {
+        class: 'btn full primary', text: 'KLAAR',
+        onClick: () => { AudioFX.beep(); ctx.next(); }
       }));
-      actions.appendChild(U.el('button', {
-        class: 'btn danger', text: 'FOUT',
-        onClick: () => {
-          AudioFX.lose(); U.flash('fire');
-          count = 1;
-          turnIdx = (turnIdx + 1) % players.length;
-          update();
-        }
-      }));
-
-      footer.appendChild(U.el('button', { class: 'btn small ghost', text: 'STOPPEN', onClick: () => ctx.next() }));
-
-      function finish() {
-        body.innerHTML = ''; footer.innerHTML = '';
-        const drink = U.buildDrinkInstruction(3, availableDrinks, intensity);
-        AudioFX.win(); U.flash('cyan');
-        body.appendChild(U.el('div', { class: 'sociale-headline', text: '50!' }));
-        body.appendChild(U.el('div', { class: 'sociale-reason', html: `Iedereen behalve <strong>${players[(turnIdx + players.length - 1) % players.length]}</strong>: ${drink}` }));
-        footer.appendChild(U.el('button', { class: 'btn full', text: 'VOLGENDE RONDE', onClick: () => ctx.next() }));
-      }
-
-      update();
     }
   };
 })();

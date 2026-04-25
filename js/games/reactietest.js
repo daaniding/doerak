@@ -35,13 +35,15 @@
         body.innerHTML = '';
         if (queue.length === 0) return showLeaderboard();
         current = queue.shift();
-        body.appendChild(U.el('div', { class: 'mlt-question center', text: `${current}, jouw beurt.` }));
-        body.appendChild(U.el('div', { class: 'reactie-stage', text: 'Tap om te starten' }));
-        const stage = body.querySelector('.reactie-stage');
-        stage.addEventListener('pointerdown', () => {
-          AudioFX.beep();
-          arm(stage);
-        }, { once: true });
+        U.turnPopup(current, 'JOUW BEURT').then(() => {
+          body.appendChild(U.el('div', { class: 'mlt-question center', text: `${current}, tap om te starten` }));
+          body.appendChild(U.el('div', { class: 'reactie-stage', text: 'TAP HIER' }));
+          const stage = body.querySelector('.reactie-stage');
+          stage.addEventListener('pointerdown', () => {
+            AudioFX.beep();
+            arm(stage);
+          }, { once: true });
+        });
       }
 
       function arm(stage) {
@@ -80,7 +82,7 @@
             stage.style.fontSize = '64px';
             footer.innerHTML = '';
             footer.appendChild(U.el('button', {
-              class: 'btn full', text: 'VOLGENDE',
+              class: 'btn full primary', text: 'VOLGENDE',
               onClick: () => { footer.innerHTML = ''; intro(); }
             }));
           }
@@ -107,7 +109,10 @@
             U.el('div', { class: 'nm', text: t.name }),
             U.el('div', { class: 'ms', text: t.best === 99999 ? 'TE VROEG' : t.best + ' ms' })
           );
-          if (drink) row.appendChild(U.el('div', { class: 'ms', style: { color: 'var(--ink-orange)' }, text: drink }));
+          if (drink) {
+            ctx.trackDrink(t.name, i === 0 ? 3 : i === 1 ? 2 : 1);
+            row.appendChild(U.el('div', { class: 'ms', style: { color: 'var(--coral-deep)' }, text: drink }));
+          }
           lb.appendChild(row);
         });
         body.appendChild(lb);

@@ -1,6 +1,40 @@
 /* DOERAK content. All Dutch, casual 19-yo tone. Drink amounts via {{drink:N}}. */
 window.DOERAK_DATA = {
 
+  /* Snel Antwoord — quick answer questions */
+  snelAntwoord: [
+    "Noem 3 NL-rappers",
+    "Wat zou je doen met 1 miljoen?",
+    "Noem een dier dat in de jungle leeft",
+    "Wie is je favoriete leraar ooit?",
+    "Welke vakantie was de slechtste?",
+    "Wat heb je vanochtend ontbeten?",
+    "Naam van de straat waar je opa woont",
+    "Eerste school waar je op zat",
+    "Een nummer dat altijd op je verjaardag draait",
+    "Welk gerecht haat je het meest?",
+    "Naam je laatste 3 ex-en",
+    "Wat is je grootste angst",
+    "Wie zou je met geen enkele reden kussen",
+    "Een geheim dat je nog niemand verteld hebt",
+    "Hoeveel seconden heb je laatst onder de douche gestaan",
+    "Naam 3 dingen die je écht haat aan deze groep",
+    "Welke film kijk je elk jaar opnieuw",
+    "Eerste woord dat in je hoofd komt bij Saturday",
+    "Wat zou je morgen weggooien als je moest",
+    "Welke YouTuber zou je nooit ontmoeten",
+    "Hoe heet de buurman waar je jaren naast woonde",
+    "Noem de naam van iemand die je echt mist",
+    "Welke kledingstuk wil je nooit meer aan",
+    "Op welk geluid word jij gek",
+    "Wat is je grootste fout van afgelopen jaar",
+    "Welke plek zou je morgen verbranden als je kon",
+    "Wat zou je tegen je 12-jarige zelf zeggen",
+    "Een drank die je nooit meer wil drinken",
+    "Welk getal zit nu in je hoofd",
+    "Wat is je laatste Google-zoekopdracht?"
+  ],
+
   /* Most Likely To — 50+ */
   mostLikelyTo: [
     "Wie van {{name1}} en {{name2}} heeft het laatst gegoogled hoe je iemand inmaakt?",

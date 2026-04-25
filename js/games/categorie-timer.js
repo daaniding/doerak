@@ -55,13 +55,15 @@
         remaining = SECONDS;
         timerEl.textContent = remaining;
         timerEl.classList.remove('shake', 'hard');
-        interval = setInterval(() => {
-          remaining--;
-          timerEl.textContent = remaining;
-          AudioFX.tick();
-          if (remaining <= 3) U.shake(timerEl, false, 1000);
-          if (remaining <= 0) failTurn();
-        }, 1000);
+        U.turnPopup(p, 'JOUW BEURT').then(() => {
+          interval = setInterval(() => {
+            remaining--;
+            timerEl.textContent = remaining;
+            AudioFX.tick();
+            if (remaining <= 3) U.shake(timerEl, false, 1000);
+            if (remaining <= 0) failTurn();
+          }, 1000);
+        });
         i++;
         if (i >= order.length) { rounds++; i = 0; }
       }
@@ -70,8 +72,9 @@
         clearInterval(interval);
         AudioFX.lose(); U.flash('fire');
         const p = order[((i - 1) % order.length + order.length) % order.length];
+        ctx.trackDrink(p, 4);
         body.innerHTML = ''; footer.innerHTML = '';
-        body.appendChild(U.el('div', { class: 'kicker orange', text: 'GEFAALD' }));
+        body.appendChild(U.el('div', { class: 'kicker coral', style: { alignSelf: 'center' }, text: 'GEFAALD' }));
         body.appendChild(U.el('div', { class: 'sociale-reason', html: `<strong>${p}</strong>, ${drinkFail}` }));
         if (rounds >= 3) {
           const drinkWin = U.buildDrinkInstruction(3, availableDrinks, intensity);

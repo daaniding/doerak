@@ -242,6 +242,14 @@
       <circle cx="32" cy="32" r="4" fill="var(--coral-deep)"/>
       <line x1="44" y1="20" x2="56" y2="8" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
       <path d="M56 8 L52 14 L58 12 Z" fill="var(--ink)"/>
+    `),
+
+    /* ⚡ Snel Antwoord — speech bubble + lightning */
+    snelAntwoord: () => wrap(`
+      <path d="M8 14 L52 14 Q56 14 56 18 L56 38 Q56 42 52 42 L24 42 L14 52 L16 42 L12 42 Q8 42 8 38 Z"
+        fill="var(--mint)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M34 18 L24 30 L30 30 L28 40 L40 26 L34 26 L36 18 Z"
+        fill="var(--yellow)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>
     `)
   };
 

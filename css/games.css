@@ -786,3 +786,44 @@
   -webkit-text-stroke: 5px var(--ink);
   text-shadow: 7px 7px 0 var(--ink);
 }
+
+/* === Tap-tally (Juffen + Cheers manual play) === */
+.tap-tally {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.tap-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--s-2);
+  align-items: center;
+  padding: var(--s-3) var(--s-4);
+  background: var(--cream);
+  color: var(--ink);
+  border: 3px solid var(--ink);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-pop-sm);
+  cursor: pointer;
+  user-select: none;
+  transition: transform 120ms var(--ease-pop), background 200ms;
+}
+.tap-row:active { transform: translateY(2px); box-shadow: 0 1px 0 0 var(--ink); }
+.tap-row.flash { background: var(--coral); color: var(--cream); }
+.tap-row .tap-name {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 5vw, 22px);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tap-row .tap-count {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(20px, 6vw, 26px);
+  color: var(--coral-deep);
+  min-width: 32px;
+  text-align: right;
+}
+.tap-row.flash .tap-count { color: var(--cream); }

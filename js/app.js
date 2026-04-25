@@ -18,7 +18,7 @@
     onboarded: !!localStorage.getItem('doerak.onboarded'),
     players: [],
     availableDrinks: [],
-    pack: null,                // 'kort' / 'klassiek' / 'marathon' / 'avond'
+    pack: null,
     intensity: 'normaal',
     voorspelling: null,
     seating: [],
@@ -27,6 +27,8 @@
     sessionStart: null,
     paused: false,
     stats: { mostLikelyPicks: {} },
+    promille: {},              // { playerName: totalUnits }
+    drinks:   {},              // { playerName: numberOfDrinkCommands }
     eindscherm: null
   });
 
@@ -41,7 +43,8 @@
     mostLikelyBomb: 'coral', imposter: 'mint', drunkocracy: 'coral',
     twentyone: 'blush', buzz: 'yellow', categorieTimer: 'coral',
     waterval: 'sky', blindeKeuze: 'mint', regelRoulette: 'yellow',
-    buddy: 'coral', dubbelPech: 'coral', uitdelen: 'mint', guess5: 'yellow'
+    buddy: 'coral', dubbelPech: 'coral', uitdelen: 'mint', guess5: 'yellow',
+    snelAntwoord: 'mint'
   };
   function setTheme(t) {
     if (t) document.body.setAttribute('data-theme', t);
@@ -91,7 +94,7 @@
     mount(s => {
       s.classList.add('welcome');
       s.appendChild(U.el('div', { class: 'marker', text: 'NL · 18+ · ★' }));
-      s.appendChild(U.el('div', { class: 'marker right', text: '16 GAMES' }));
+      s.appendChild(U.el('div', { class: 'marker right', text: '17 GAMES' }));
 
       // floating decorative SVGs
       ['cup', 'sparkle', 'confetti', 'bottle'].forEach((d, i) => {
@@ -599,7 +602,7 @@
   }
 
   function makeGameCtx(stage) {
-    return {
+    const ctx = {
       players: state.players,
       availableDrinks: state.availableDrinks,
       intensity: state.intensity,
@@ -616,6 +619,18 @@
         }
         persist();
       },
+      /* drink(playerName, units) — returns instruction text AND tracks units consumed
+       * for promille estimation at eindscherm. Pass null/empty for no tracking. */
+      drink(playerName, units) {
+        const text = U.buildDrinkInstruction(units, state.availableDrinks, state.intensity);
+        if (playerName) trackDrink(playerName, units);
+        return text;
+      },
+      drinkAll(units) {
+        state.players.forEach(p => trackDrink(p, units));
+        return U.buildDrinkInstruction(units, state.availableDrinks, state.intensity);
+      },
+      trackDrink(playerName, units) { trackDrink(playerName, units); },
       next: () => {
         state.activeRules = state.activeRules.filter(r => {
           if (r.expiresInRounds < 0) return true;
@@ -632,6 +647,32 @@
       },
       cleanup: null
     };
+    return ctx;
+  }
+
+  function trackDrink(name, units) {
+    if (!name || !units) return;
+    if (!state.promille) state.promille = {};
+    if (!state.drinks) state.drinks = {};
+    state.promille[name] = (state.promille[name] || 0) + units;
+    state.drinks[name] = (state.drinks[name] || 0) + 1;
+    persist();
+  }
+
+  /* Estimate BAC (‰) using simplified Widmark.
+   * Unit-to-grams: avg 1.5g pure alcohol per "unit" (slok bier weighted).
+   * Distribution: 0.65 (gender-neutral average).
+   * Weight: 75kg default (no per-player input — we estimate).
+   * Eliminates 0.15‰ per hour since session start. */
+  function estimateBAC(units) {
+    if (!units) return 0;
+    const grams = units * 1.5;
+    const weightKg = 75;
+    const dist = 0.65;
+    const elapsedH = state.sessionStart ? (Date.now() - state.sessionStart) / 3600000 : 0.5;
+    const rawBAC = (grams * 1.055) / (weightKg * dist);
+    const eliminated = Math.max(0, elapsedH * 0.15);
+    return Math.max(0, rawBAC - eliminated);
   }
 
   function pickAndPlay(stage, apiCtx) {
@@ -740,14 +781,31 @@
 
       // Stats
       card.appendChild(buildStatRow('RONDES', state.history.length));
-      const longest = state.history.reduce((a, b) => a + (DoerakGames.byId(b)?.long ? 1 : 0), 0);
-      card.appendChild(buildStatRow('LONG GAMES', longest));
       const mlt = state.stats?.mostLikelyPicks || {};
       const mltSorted = Object.entries(mlt).sort((a, b) => b[1] - a[1]);
       if (mltSorted.length) {
         card.appendChild(buildStatRow('MOST LIKELY KING', `${mltSorted[0][0]} (${mltSorted[0][1]}×)`));
       }
-      card.appendChild(buildStatRow('REGELS ACTIEF', state.activeRules.length));
+      card.appendChild(buildStatRow('REGELS', state.activeRules.length));
+
+      // Promille tracker — estimated BAC per player
+      const drinks = state.promille || {};
+      const drinkRanking = Object.entries(drinks).sort((a, b) => b[1] - a[1]);
+      if (drinkRanking.length) {
+        card.appendChild(U.el('div', { class: 'kicker coral', style: { alignSelf: 'center', marginTop: '12px' }, text: '🥃 PROMILLE-METER (geschat)' }));
+        const tbl = U.el('div', { class: 'promille-table' });
+        drinkRanking.forEach(([name, units], i) => {
+          const bac = estimateBAC(units);
+          const row = U.el('div', { class: 'promille-row' + (i === 0 ? ' top' : '') });
+          row.appendChild(U.el('div', { class: 'promille-name', text: name }));
+          row.appendChild(U.el('div', { class: 'promille-bac', text: bac.toFixed(2) + '‰' }));
+          row.appendChild(U.el('div', { class: 'promille-units', text: units + ' slk' }));
+          tbl.appendChild(row);
+        });
+        card.appendChild(tbl);
+        card.appendChild(U.el('div', { class: 'promille-disclaimer',
+          text: 'Geschat o.b.v. 75kg gemiddelde · Widmark-formule · niet medisch betrouwbaar' }));
+      }
       card.appendChild(U.el('div', { class: 'kicker cream', style: { alignSelf: 'center', marginTop: '8px' }, text: 'DOERAK · ' + (new Date()).toLocaleDateString('nl-NL') }));
 
       s.appendChild(card);
