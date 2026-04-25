@@ -1,11 +1,12 @@
 /* DOERAK service worker — cache-first for offline play after first load. */
-const CACHE = 'doerak-v1';
+const CACHE = 'doerak-v3';   /* bump on every roster change */
 const ASSETS = [
   './',
   'index.html',
   'css/main.css',
   'css/screens.css',
   'css/games.css',
+  'js/icons.js',
   'js/storage.js',
   'js/utils.js',
   'js/audio.js',
@@ -17,9 +18,7 @@ const ASSETS = [
   'js/games/most-likely-to.js',
   'js/games/most-likely-bomb.js',
   'js/games/imposter.js',
-  'js/games/paranoia.js',
   'js/games/drunkocracy.js',
-  'js/games/hot-seat.js',
   'js/games/twentyone.js',
   'js/games/buzz.js',
   'js/games/categorie-timer.js',
@@ -27,11 +26,12 @@ const ASSETS = [
   'js/games/blinde-keuze.js',
   'js/games/regel-roulette.js',
   'js/games/buddy.js',
-  'js/games/saboteur.js',
-  'js/games/sociale.js',
   'js/games/dubbel-pech.js',
   'js/games/uitdelen.js',
-  'js/games/guess-in-five.js'
+  'js/games/guess-in-five.js',
+  'js/games/snel-antwoord.js',
+  'js/games/wie-liegt.js',
+  'js/games/beste-vrienden.js'
 ];
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).catch(() => {}));
@@ -54,7 +54,8 @@ self.addEventListener('fetch', (e) => {
         }
         return res;
       }).catch(() => cached);
-      return cached || fetched;
+      // Network-first when fresh asset is available so users get fixes promptly
+      return fetched || cached;
     })
   );
 });
