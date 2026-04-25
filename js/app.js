@@ -514,7 +514,7 @@
     mount(s => {
       s.classList.add('seating');
       s.appendChild(U.el('div', { class: 'kicker coral', style: { alignSelf: 'center' }, text: 'ZITVOLGORDE' }));
-      s.appendChild(U.el('h2', { style: { color: 'var(--ink)', textAlign: 'center', textShadow: '4px 4px 0 var(--coral)' }, text: 'JE BUREN VAN VANAVOND' }));
+      s.appendChild(U.el('h2', { style: { color: 'var(--cream)', textAlign: 'center', WebkitTextStroke: '3px var(--ink)', textShadow: '4px 4px 0 var(--pink)' }, text: 'JE BUREN VAN VANAVOND' }));
       const tableWrap = U.el('div', { class: 'seating-table' });
       tableWrap.appendChild(U.el('div', { class: 'table-disc' }));
       state.seating.forEach((p, idx) => {
@@ -530,7 +530,7 @@
         tableWrap.appendChild(seat);
       });
       s.appendChild(tableWrap);
-      s.appendChild(U.el('p', { style: { textAlign: 'center', color: 'var(--ink)', opacity: 0.7, fontWeight: 800 },
+      s.appendChild(U.el('p', { style: { textAlign: 'center', color: 'var(--cream)', opacity: 0.78, fontWeight: 800 },
         text: 'Onthoud dit — sommige games gebruiken je buren.' }));
 
       const footer = U.el('div', { class: 'setup-footer' });

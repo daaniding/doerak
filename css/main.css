@@ -6,30 +6,38 @@
  */
 
 :root {
-  /* === Purple-pop palette (BoomIt-vibe) === */
-  --cream:        #FFF4E5;
+  /* === INSIGHT-style palette: deep purple bg, neon accents, cream cards === */
+  --bg-dark:      #1A0640;       /* primary background — deep violet */
+  --bg-darker:    #0E0226;
+  --bg-card:      #2D1166;       /* darker purple card surface */
+
+  --cream:        #FFF4E5;       /* card surface (light) */
   --cream-deep:   #FFE9CC;
   --cream-shade:  #FAD9A8;
 
-  --purple:       #7B2CFF;       /* PRIMARY — vibrant violet */
-  --purple-deep:  #4A0EC2;
+  --purple:       #9D5BFF;       /* lighter, brighter on dark bg */
+  --purple-deep:  #6B1FE0;
   --purple-soft:  #C9ADFF;
+
+  --pink:         #FF3B82;       /* PRIMARY — neon hot pink */
+  --pink-deep:    #C91E5F;
+  --pink-soft:    #FFB5C7;
 
   --coral:        #FF4D5E;       /* secondary accent */
   --coral-deep:   #C2293A;
   --coral-soft:   #FFB5BD;
 
-  --yellow:       #FFCB05;
+  --yellow:       #FFD60A;
   --yellow-soft:  #FFE082;
 
-  --mint:         #20D6A0;
+  --mint:         #00E1A1;       /* slight more neon */
   --mint-deep:    #0F9D72;
 
   --sky:          #5B9BFF;
 
-  --ink:          #150022;       /* deep purple-black */
-  --ink-soft:     #2D0044;
-  --ink-mute:     #5A3F73;
+  --ink:          #0E0226;       /* deepest violet, near black */
+  --ink-soft:     #2D1166;
+  --ink-mute:     #6B5A85;
 
   /* === Functional aliases === */
   --bg: var(--cream);
@@ -40,9 +48,6 @@
   --fg-on-color: var(--cream);
 
   /* Backward-compat (older inline references) */
-  --pink: var(--coral);
-  --pink-deep: var(--coral-deep);
-  --pink-soft: var(--coral-soft);
   --lime: var(--yellow);
   --lime-deep: #C9A005;
   --orange: var(--coral);
@@ -50,14 +55,14 @@
   --cyan: var(--sky);
   --red: var(--coral-deep);
   --bone: var(--cream);
-  --ink-orange: var(--coral);
-  --ink-cyan: var(--mint-deep);
+  --ink-orange: var(--pink);
+  --ink-cyan: var(--mint);
   --ink-bone: var(--cream);
   --ink-paper: var(--ink);
 
-  /* Hero color (per-game) — PURPLE PRIMARY */
-  --hero: var(--purple);
-  --hero-deep: var(--purple-deep);
+  /* Hero color (per-game) — PINK PRIMARY (Insight neon) */
+  --hero: var(--pink);
+  --hero-deep: var(--pink-deep);
 
   /* Type */
   --font-display: "Bowlby One", "Anton", sans-serif;
@@ -92,8 +97,8 @@ html, body {
   height: 100%;
   overflow: hidden;
   overscroll-behavior: none;
-  background: var(--cream);
-  color: var(--fg);
+  background: var(--bg-dark);
+  color: var(--cream);
   font-family: var(--font-body);
   font-weight: 700;
   font-size: 15px;
@@ -101,26 +106,26 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* === Animated background — soft purple gradient with cream + accent radials === */
+/* === Insight-style: deep dark violet bg with neon accent radials === */
 body {
   position: relative;
   background:
-    radial-gradient(ellipse 60% 40% at 18% 10%, rgba(255,203,5,0.30), transparent 60%),
-    radial-gradient(ellipse 70% 50% at 88% 8%, rgba(123,44,255,0.28), transparent 60%),
-    radial-gradient(ellipse 80% 60% at 95% 92%, rgba(32,214,160,0.18), transparent 60%),
-    radial-gradient(ellipse 70% 50% at 5% 95%, rgba(255,77,94,0.18), transparent 60%),
-    var(--cream);
+    radial-gradient(ellipse 70% 50% at 18% 10%, rgba(255,59,130,0.22), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 88% 8%, rgba(157,91,255,0.28), transparent 60%),
+    radial-gradient(ellipse 80% 60% at 95% 92%, rgba(0,225,161,0.16), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 5% 95%, rgba(255,214,10,0.12), transparent 60%),
+    linear-gradient(160deg, #1A0640 0%, #2D1166 50%, #1A0640 100%);
   background-attachment: fixed;
 }
 
-/* Per-screen theme: tints the bg accents subtly without going dark */
+/* Per-screen theme: shifts hero color */
 body[data-theme="purple"] { --hero: var(--purple); --hero-deep: var(--purple-deep); }
 body[data-theme="coral"]  { --hero: var(--coral); --hero-deep: var(--coral-deep); }
 body[data-theme="yellow"] { --hero: var(--yellow); --hero-deep: #C9A005; }
 body[data-theme="mint"]   { --hero: var(--mint); --hero-deep: var(--mint-deep); }
 body[data-theme="sky"]    { --hero: var(--sky); --hero-deep: #2868D9; }
-body[data-theme="ink"]    { --hero: var(--ink-soft); --hero-deep: var(--ink); }
-body[data-theme="blush"]  { --hero: var(--purple-soft); --hero-deep: var(--purple); }
+body[data-theme="ink"]    { --hero: var(--pink); --hero-deep: var(--pink-deep); }
+body[data-theme="blush"]  { --hero: var(--pink); --hero-deep: var(--pink-deep); }
 
 /* Dot confetti overlay */
 .grain {
@@ -184,7 +189,7 @@ body[data-theme="blush"]  { --hero: var(--purple-soft); --hero-deep: var(--purpl
   padding: calc(var(--s-5) + var(--safe-top)) var(--s-5) calc(var(--s-5) + var(--safe-bot));
   overflow: hidden;
   will-change: transform, opacity;
-  color: var(--ink);
+  color: var(--cream);
 }
 .screen.entering { animation: screenIn 380ms var(--ease-pop) both; }
 .screen.exiting  { animation: screenOut 220ms var(--ease-out) both; }
@@ -250,7 +255,7 @@ p { margin: 0; }
   gap: var(--s-2);
   min-height: 60px;
   padding: var(--s-3) var(--s-5);
-  background: var(--purple);
+  background: var(--pink);
   color: var(--cream);
   border: 3px solid var(--ink);
   border-radius: var(--r-pill);
@@ -272,7 +277,8 @@ p { margin: 0; }
 .btn.full   { width: 100%; }
 .btn.small  { min-height: 44px; padding: var(--s-2) var(--s-4); font-size: 15px; }
 
-.btn.primary { background: var(--purple); color: var(--cream); }
+.btn.primary { background: var(--pink); color: var(--cream); }
+.btn.purple  { background: var(--purple); color: var(--cream); }
 .btn.coral   { background: var(--coral); color: var(--cream); }
 .btn.cream   { background: var(--cream); color: var(--ink); }
 .btn.yellow  { background: var(--yellow); color: var(--ink); }
@@ -280,10 +286,10 @@ p { margin: 0; }
 .btn.ink     { background: var(--ink); color: var(--cream); }
 .btn.danger  { background: var(--coral-deep); color: var(--cream); }
 .btn.ghost   {
-  background: transparent;
-  color: var(--ink);
-  border-color: var(--ink);
-  box-shadow: 0 5px 0 0 rgba(26,22,53,0.25);
+  background: rgba(255,244,229,0.08);
+  color: var(--cream);
+  border-color: var(--cream);
+  box-shadow: 0 5px 0 0 rgba(0,0,0,0.5);
 }
 
 /* === Cards === */
