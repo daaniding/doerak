@@ -73,12 +73,34 @@
     }
   }
 
+  /* Per-game color themes — sets body[data-theme] for vibrant per-game backgrounds. */
+  const GAME_THEMES = {
+    tijdsbom: 'red', reactietest: 'lime', mostLikelyTo: 'pink',
+    mostLikelyBomb: 'red', imposter: 'purple', paranoia: 'purple',
+    drunkocracy: 'pink', hotSeat: 'orange', twentyone: 'pink',
+    buzz: 'lime', categorieTimer: 'orange', waterval: 'cyan',
+    blindeKeuze: 'purple', regelRoulette: 'orange', buddy: 'pink',
+    saboteur: 'red', sociale: 'lime', dubbelPech: 'red',
+    uitdelen: 'purple', guess5: 'orange'
+  };
+
+  function setTheme(t) {
+    if (t) document.body.setAttribute('data-theme', t);
+    else   document.body.removeAttribute('data-theme');
+  }
+
   /* ---- 1. WELCOME ---- */
   function renderWelcome() {
+    setTheme(null);
     mount(s => {
       s.classList.add('welcome');
       s.appendChild(U.el('div', { class: 'marker', text: 'NL · 18+ · ★' }));
-      s.appendChild(U.el('div', { class: 'marker right', text: 'EDITION 01' }));
+      s.appendChild(U.el('div', { class: 'marker right', text: '20 GAMES' }));
+
+      // floating party emoji decorations
+      ['🍻','🥂','🎉','🥳'].forEach((em, i) => {
+        s.appendChild(U.el('div', { class: 'welcome-emoji e' + (i+1), text: em }));
+      });
 
       const title = U.el('h1', { class: 'welcome-title' });
       const letters = ['D', 'O', 'E', 'R', 'A', 'K'];
@@ -90,7 +112,7 @@
       });
       s.appendChild(title);
 
-      s.appendChild(U.el('div', { class: 'welcome-tag', text: 'drinkspel voor avonden die ontsporen' }));
+      s.appendChild(U.el('div', { class: 'welcome-tag', text: 'drink. doe. doerak.' }));
 
       const stack = U.el('div', { class: 'btn-stack' });
       const session = DoerakStorage.load();
@@ -114,6 +136,7 @@
 
   /* ---- 2. SETUP ---- */
   function setupShell(stepN, builder) {
+    setTheme(null);
     mount(s => {
       s.classList.add('setup');
       const prog = U.el('div', { class: 'setup-progress' });
@@ -379,8 +402,9 @@
   }
 
   function renderVoorspelling() {
+    setTheme('purple');
     renderVoteFlow({
-      heading: 'GEEF ANONIEM JE GOK DOOR',
+      heading: '🤫 GEEF ANONIEM JE GOK DOOR',
       blurb: 'Wie wordt vannacht het meest dronken? Privé.',
       exitTo: 'setup-intens',
       onDone: ({ winner, votes }) => {
@@ -393,6 +417,7 @@
 
   /* ---- 4. ZITPLAATSEN ---- */
   function renderZitplaatsen() {
+    setTheme('cyan');
     if (!state.seating.length || state.seating.length !== state.players.length) {
       state.seating = U.shuffle(state.players);
       persist();
@@ -449,13 +474,13 @@
       // Topbar
       const tb = U.el('div', { class: 'topbar' });
       const left = U.el('div', { class: 'row' },
-        U.el('span', { class: 'pill cyan', text: 'RONDE ' + (state.history.length + 1) }),
+        U.el('span', { class: 'pill lime', text: '🎲 RONDE ' + (state.history.length + 1) }),
       );
       const right = U.el('div', { class: 'row' });
-      const timeEl = U.el('span', { class: 'pill', text: '--:--' });
+      const timeEl = U.el('span', { class: 'pill pink', text: '⏱ --:--' });
       const pauseBtn = U.el('button', {
-        class: 'btn small ghost', style: { padding: '4px 8px', minHeight: '0' },
-        text: '||',
+        class: 'btn small ghost', style: { padding: '6px 14px', minHeight: '0', fontSize: '14px' },
+        text: '⏸',
         onClick: () => showPauseMenu()
       });
       right.appendChild(timeEl); right.appendChild(pauseBtn);
@@ -476,7 +501,7 @@
       // Update timer
       const updateTime = () => {
         if (state.paused) {
-          timeEl.textContent = 'PAUZE';
+          timeEl.textContent = '⏸ PAUZE';
           return;
         }
         const remainMs = state.sessionEnd - Date.now();
@@ -486,10 +511,10 @@
             persist();
             showTimeUp(s);
           }
-          timeEl.textContent = '0:00';
+          timeEl.textContent = '⏱ 0:00';
           return;
         }
-        timeEl.textContent = U.fmtTime(remainMs / 1000);
+        timeEl.textContent = '⏱ ' + U.fmtTime(remainMs / 1000);
       };
       if (loopTimer) clearInterval(loopTimer);
       loopTimer = setInterval(updateTime, 1000);
@@ -550,9 +575,10 @@
     const game = DoerakGames.pickNext(state.history, state.intensity);
     state.history.push(game.id);
     persist();
+    setTheme(GAME_THEMES[game.id] || 'pink');
     // refresh ronde counter
-    const pill = document.querySelector('.topbar .pill.cyan');
-    if (pill) pill.textContent = 'RONDE ' + state.history.length;
+    const pill = document.querySelector('.topbar .pill');
+    if (pill) pill.textContent = '🎲 RONDE ' + state.history.length;
 
     // run slot machine using game name as final, with other game names as filler
     const candidates = DoerakGames.list().map(g => g.name);
@@ -576,13 +602,22 @@
     });
   }
 
+  const GAME_EMOJI = {
+    tijdsbom: '💣', reactietest: '⚡', mostLikelyTo: '👉', mostLikelyBomb: '👉💣',
+    imposter: '🕵️', paranoia: '🤫', drunkocracy: '🗳️', hotSeat: '🔥',
+    twentyone: '🔢', buzz: '🐝', categorieTimer: '⏳', waterval: '🌊',
+    blindeKeuze: '🚪', regelRoulette: '🎡', buddy: '👯', saboteur: '😈',
+    sociale: '🍻', dubbelPech: '✌️', uitdelen: '🎁', guess5: '🎯'
+  };
+
   function showIntro(view, game, onStart) {
     view.innerHTML = '';
     const wrap = U.el('div', { class: 'game-intro' });
-    wrap.appendChild(U.el('div', { class: 'badge', text: 'NU SPELEN' }));
-    wrap.appendChild(U.el('div', { class: 'gname', text: game.name }));
+    wrap.appendChild(U.el('div', { class: 'badge', text: '🎲 NU SPELEN' }));
+    const gnameStr = (GAME_EMOJI[game.id] || '✨') + ' ' + game.name;
+    wrap.appendChild(U.el('div', { class: 'gname', text: gnameStr }));
     wrap.appendChild(U.el('div', { class: 'gdesc', text: game.desc }));
-    wrap.appendChild(U.el('button', { class: 'btn full', text: 'TAP OM TE STARTEN', onClick: () => { AudioFX.beep(); onStart(); } }));
+    wrap.appendChild(U.el('button', { class: 'btn full primary', text: '🚀 START', onClick: () => { AudioFX.beep(); onStart(); } }));
     view.appendChild(wrap);
   }
 
@@ -631,9 +666,10 @@
   function renderEindscherm() {
     if (loopTimer) { clearInterval(loopTimer); loopTimer = null; }
     if (activeGameCleanup) { try { activeGameCleanup(); } catch (e) {} activeGameCleanup = null; }
+    setTheme('lime');
 
     renderVoteFlow({
-      heading: 'WIE WERD HET MEEST DRONKEN?',
+      heading: '🏆 WIE WERD HET MEEST DRONKEN?',
       blurb: 'Eerlijk en anoniem. Geef door.',
       onDone: ({ winner, votes, tally }) => {
         state.eindscherm = { winner, votes, tally };
