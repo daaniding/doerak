@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0e0a08">
+<meta name="description" content="DOERAK — drinkspel voor avonden die ontsporen.">
+<title>DOERAK</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Major+Mono+Display&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/screens.css">
+<link rel="stylesheet" href="css/games.css">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230e0a08'/%3E%3Ctext x='50%25' y='62%25' text-anchor='middle' fill='%23ff5a1f' font-family='Anton,sans-serif' font-size='22'%3ED%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+<!-- noise + grain overlays sit above everything -->
+<div class="grain" aria-hidden="true"></div>
+<div class="halftone" aria-hidden="true"></div>
+
+<main id="app" class="app"></main>
+
+<!-- offscreen template node for screen-shake -->
+<div class="flash" id="flash" aria-hidden="true"></div>
+
+<script src="data/questions.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/games/tijdsbom.js"></script>
+<script src="js/games/reactietest.js"></script>
+<script src="js/games/most-likely-to.js"></script>
+<script src="js/games/most-likely-bomb.js"></script>
+<script src="js/games/imposter.js"></script>
+<script src="js/games/paranoia.js"></script>
+<script src="js/games/drunkocracy.js"></script>
+<script src="js/games/hot-seat.js"></script>
+<script src="js/games/twentyone.js"></script>
+<script src="js/games/buzz.js"></script>
+<script src="js/games/categorie-timer.js"></script>
+<script src="js/games/waterval.js"></script>
+<script src="js/games/blinde-keuze.js"></script>
+<script src="js/games/regel-roulette.js"></script>
+<script src="js/games/buddy.js"></script>
+<script src="js/games/saboteur.js"></script>
+<script src="js/games/sociale.js"></script>
+<script src="js/games/dubbel-pech.js"></script>
+<script src="js/games/uitdelen.js"></script>
+<script src="js/games/guess-in-five.js"></script>
+<script src="js/games.js"></script>
+<script src="js/app.js"></script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>

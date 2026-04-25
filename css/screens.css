@@ -1,0 +1,582 @@
+/* DOERAK — per-screen styles. */
+
+/* ---------- Screen 1: Welcome ---------- */
+.welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  padding: var(--s-6) var(--s-5);
+  height: 100%;
+}
+.welcome .marker {
+  position: absolute;
+  top: max(var(--s-5), var(--safe-top));
+  left: var(--s-5);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--ink-cyan);
+  text-transform: uppercase;
+}
+.welcome .marker.right {
+  left: auto;
+  right: var(--s-5);
+  color: var(--ink-orange);
+}
+.welcome-title {
+  font-family: var(--font-display);
+  font-size: clamp(80px, 28vw, 200px);
+  line-height: 0.78;
+  letter-spacing: -0.04em;
+  color: var(--ink-bone);
+  margin: 0;
+  position: relative;
+  text-align: center;
+}
+.welcome-title .l {
+  display: inline-block;
+  position: relative;
+}
+.welcome-title .l::before {
+  content: attr(data-l);
+  position: absolute;
+  inset: 0;
+  color: var(--ink-cyan);
+  transform: translate(-3px, -2px);
+  z-index: -1;
+  mix-blend-mode: screen;
+}
+.welcome-title .l::after {
+  content: attr(data-l);
+  position: absolute;
+  inset: 0;
+  color: var(--ink-orange);
+  transform: translate(3px, 2px);
+  z-index: -2;
+  mix-blend-mode: screen;
+}
+.welcome-tag {
+  font-family: var(--font-deco);
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  color: var(--ink-bone-dim);
+  text-transform: lowercase;
+  margin-top: var(--s-5);
+  margin-bottom: var(--s-7);
+}
+.welcome-tag::before { content: "// "; color: var(--ink-orange); }
+.welcome-tag::after { content: " //"; color: var(--ink-cyan); }
+
+.welcome .btn-stack { width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: var(--s-3); }
+
+.welcome-bottom {
+  position: absolute;
+  bottom: calc(var(--s-5) + var(--safe-bot));
+  left: 0; right: 0;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--ink-bone-dim);
+  opacity: 0.5;
+}
+
+/* ---------- Setup ---------- */
+.setup {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.setup-progress {
+  display: flex;
+  gap: 6px;
+  margin-bottom: var(--s-5);
+}
+.setup-progress span {
+  flex: 1;
+  height: 5px;
+  background: var(--ink-paper-3);
+  border-radius: 1px;
+}
+.setup-progress span.done { background: var(--ink-orange); }
+.setup-progress span.current { background: var(--ink-cyan); animation: pulse 1.4s infinite; }
+
+.setup-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  min-height: 0;
+}
+.setup-step .num {
+  font-family: var(--font-deco);
+  font-size: 14px;
+  letter-spacing: 0.16em;
+  color: var(--ink-orange);
+  text-transform: lowercase;
+}
+.setup-step h2 {
+  margin-bottom: var(--s-2);
+}
+.setup-step p {
+  margin: 0;
+  color: var(--ink-bone-dim);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.player-input { display: flex; gap: var(--s-2); align-items: flex-end; }
+.player-input input { flex: 1; }
+.player-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  align-content: flex-start;
+}
+.player-list .chip { font-size: 14px; padding: 6px 12px; }
+.player-list .chip:active { transform: scale(0.96); }
+
+.drink-options { display: flex; flex-direction: column; gap: var(--s-3); }
+.drink-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  background: var(--ink-paper-2);
+  border: 2px dashed rgba(246,239,225,0.3);
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 140ms var(--ease-pop), border-color 140ms;
+}
+.drink-option .icon {
+  width: 56px; height: 56px;
+  flex: 0 0 56px;
+  display: grid; place-items: center;
+  border: 2px solid var(--ink-bone);
+  font-family: var(--font-display);
+  font-size: 26px;
+  border-radius: 50%;
+}
+.drink-option .name {
+  font-family: var(--font-display);
+  font-size: 28px;
+  letter-spacing: 0.02em;
+}
+.drink-option .desc {
+  font-size: 12px;
+  color: var(--ink-bone-dim);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.drink-option .text { flex: 1; }
+.drink-option .check {
+  width: 28px; height: 28px;
+  border: 2px solid var(--ink-bone);
+  display: grid; place-items: center;
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: transparent;
+}
+.drink-option.active {
+  border-color: var(--ink-orange);
+  border-style: solid;
+  background: rgba(255,90,31,0.07);
+}
+.drink-option.active .check {
+  background: var(--ink-orange);
+  color: var(--ink-paper);
+  border-color: var(--ink-orange);
+}
+.drink-option:active { transform: scale(0.98); }
+
+.option-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-3);
+}
+.option-card {
+  position: relative;
+  background: var(--ink-paper-2);
+  border: 2px solid var(--ink-bone-dim);
+  padding: var(--s-4);
+  text-align: left;
+  cursor: pointer;
+  user-select: none;
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 160ms var(--ease-pop);
+}
+.option-card .label {
+  font-family: var(--font-display);
+  font-size: 28px;
+  letter-spacing: 0.02em;
+  line-height: 0.95;
+}
+.option-card .sub {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-bone-dim);
+  margin-top: var(--s-2);
+}
+.option-card.active {
+  background: var(--ink-orange);
+  color: var(--ink-paper);
+  border-color: var(--ink-paper);
+  box-shadow: 5px 5px 0 var(--ink-cyan);
+}
+.option-card.active .sub { color: var(--ink-paper); opacity: 0.7; }
+.option-card:active { transform: scale(0.97); }
+
+.setup-footer {
+  margin-top: auto;
+  padding-top: var(--s-4);
+  display: flex;
+  gap: var(--s-3);
+}
+
+/* ---------- Voorspelling / Eindscherm vote flow ---------- */
+.vote-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  text-align: center;
+  gap: var(--s-5);
+}
+.vote-screen .who-turn {
+  font-family: var(--font-display);
+  font-size: 56px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.vote-screen .pass-instruction {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-cyan);
+}
+.vote-screen .target-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-2);
+  flex: 1;
+  align-content: start;
+  overflow-y: auto;
+  padding-bottom: var(--s-3);
+}
+.vote-screen .target-btn {
+  background: var(--ink-paper-2);
+  color: var(--ink-bone);
+  border: 2px solid var(--ink-bone-dim);
+  font-family: var(--font-display);
+  font-size: 22px;
+  padding: var(--s-4);
+  cursor: pointer;
+  transition: transform 140ms var(--ease-pop), background 140ms;
+}
+.vote-screen .target-btn:active {
+  transform: scale(0.97);
+  background: var(--ink-orange);
+  color: var(--ink-paper);
+}
+
+.reveal-stage {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-3);
+}
+.reveal-counter {
+  font-family: var(--font-display);
+  font-size: clamp(120px, 32vw, 220px);
+  line-height: 0.85;
+  color: var(--ink-orange);
+  text-shadow: -3px -2px 0 var(--ink-cyan);
+}
+.reveal-name {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 14vw, 96px);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  text-align: center;
+  animation: revealPop 700ms var(--ease-pop);
+}
+.reveal-name .num {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  letter-spacing: 0.2em;
+  color: var(--ink-cyan);
+  margin-top: var(--s-2);
+}
+@keyframes revealPop {
+  0%   { transform: scale(0.4) rotate(-3deg); opacity: 0; filter: blur(20px); }
+  60%  { transform: scale(1.08) rotate(0); opacity: 1; filter: none; }
+  100% { transform: none; }
+}
+
+/* ---------- Zitplaatsen ---------- */
+.seating {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  text-align: center;
+  gap: var(--s-5);
+}
+.seating-table {
+  position: relative;
+  flex: 1;
+  display: grid;
+  place-items: center;
+  min-height: 320px;
+}
+.seating-table .table-disc {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  aspect-ratio: 1;
+  border: 3px dashed var(--ink-cyan);
+  border-radius: 50%;
+  background:
+    repeating-conic-gradient(from 0deg, rgba(255,90,31,0.06) 0deg 8deg, transparent 8deg 16deg),
+    radial-gradient(circle, var(--ink-paper-3) 0%, transparent 70%);
+}
+.seating-table .seat {
+  position: absolute;
+  font-family: var(--font-display);
+  font-size: 22px;
+  background: var(--ink-paper-2);
+  color: var(--ink-bone);
+  border: 2px solid var(--ink-orange);
+  padding: var(--s-2) var(--s-3);
+  box-shadow: 3px 3px 0 var(--ink-cyan-deep);
+  white-space: nowrap;
+  animation: seatIn 600ms var(--ease-pop) both;
+}
+@keyframes seatIn {
+  0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* ---------- Game loop screen ---------- */
+.gameloop {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+}
+.gameloop .stage {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.gameloop .stage > .game-view {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--s-5);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ---------- Slot machine ---------- */
+.slotmachine {
+  position: absolute;
+  inset: 0;
+  background: var(--ink-paper);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.slotmachine::before, .slotmachine::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  height: 28%;
+  z-index: 2;
+  pointer-events: none;
+}
+.slotmachine::before {
+  top: 0;
+  background: linear-gradient(to bottom, var(--ink-paper) 35%, transparent 100%);
+}
+.slotmachine::after {
+  bottom: 0;
+  background: linear-gradient(to top, var(--ink-paper) 35%, transparent 100%);
+}
+.slotmachine .label-top {
+  position: absolute;
+  top: max(var(--s-5), var(--safe-top));
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--ink-cyan);
+  text-transform: uppercase;
+  z-index: 3;
+}
+.slotmachine .reel-frame {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+}
+.slotmachine .reel-frame::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  height: 80px;
+  margin-top: -40px;
+  border-top: 3px solid var(--ink-orange);
+  border-bottom: 3px solid var(--ink-orange);
+  z-index: 4;
+  pointer-events: none;
+  box-shadow: 0 0 40px rgba(255,90,31,0.4) inset;
+}
+.slotmachine .reel {
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  will-change: transform;
+}
+.slotmachine .reel .name {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: clamp(36px, 11vw, 64px);
+  letter-spacing: -0.02em;
+  text-align: center;
+  width: 100%;
+  filter: blur(0);
+}
+.slotmachine .reel.spinning .name { filter: blur(6px); }
+.slotmachine .reel.landing .name { filter: blur(2px); }
+.slotmachine .reel.landed .name {
+  filter: none;
+  color: var(--ink-bone);
+}
+.slotmachine .reel.landed .name.target {
+  color: var(--ink-orange);
+  text-shadow: -3px -2px 0 var(--ink-cyan);
+  animation: landBoom 480ms var(--ease-pop);
+}
+@keyframes landBoom {
+  0% { transform: scale(0.4); }
+  60% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+/* ---------- Game intro card ---------- */
+.game-intro {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-items: stretch;
+  justify-content: center;
+  gap: var(--s-4);
+  text-align: left;
+}
+.game-intro .badge {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 4px 10px;
+  background: var(--ink-cyan);
+  color: var(--ink-paper);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+}
+.game-intro .gname {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 14vw, 96px);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+.game-intro .gdesc {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-bone-dim);
+  margin: 0;
+}
+.game-intro .involved {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--s-2);
+}
+
+/* ---------- End screen ---------- */
+.endscreen .stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: var(--s-2) 0;
+  border-bottom: 1px dashed rgba(246,239,225,0.2);
+}
+.endscreen .stat-row .k {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-bone-dim);
+}
+.endscreen .stat-row .v {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--ink-orange);
+}
+
+/* End-of-time prompt */
+.timeup-prompt {
+  position: absolute;
+  inset: 0;
+  background: rgba(14,10,8,0.94);
+  z-index: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s-5);
+}
+.timeup-prompt .card { width: 100%; max-width: 380px; }
+
+/* Pause menu */
+.pause-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(14,10,8,0.92);
+  z-index: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s-5);
+}

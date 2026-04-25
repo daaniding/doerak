@@ -1,0 +1,11 @@
+{
+  "name": "doerak",
+  "version": "1.0.0",
+  "description": "Drinkspel voor avonden die ontsporen.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node serve.mjs",
+    "screenshot": "node screenshot.mjs"
+  }
+}
