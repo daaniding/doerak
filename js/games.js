@@ -7,33 +7,27 @@
 
     /* Pick the next game.
      * - intensity-weighted random
-     * - skip games picked in last N rounds
+     * - skip games picked in last 3 rounds (fresh feel)
      * - cap "long" games to 1 per ~5
-     * - favor "sociale" every 6-8 rounds for a breather
      */
     pickNext(history, intensity) {
       const all = this.list();
       const recentLong = history.slice(-5).some(id => {
         const g = this.byId(id); return g && g.long;
       });
-      const idsRecent = history.slice(-4);
-      const sinceSociale = (() => {
-        for (let i = history.length - 1; i >= 0; i--) {
-          if (history[i] === 'sociale') return history.length - 1 - i;
-        }
-        return 999;
-      })();
+      const idsRecent = history.slice(-3);
 
-      // Sociale forced breather
-      if (sinceSociale > 7) {
-        return this.byId('sociale');
-      }
-
-      const candidates = all.filter(g => {
+      let candidates = all.filter(g => {
         if (idsRecent.includes(g.id)) return false;
         if (g.long && recentLong) return false;
         return true;
       });
+      // Fallback: if filter eliminated everything (very small roster), use full list minus immediate previous
+      if (!candidates.length) {
+        const last = history[history.length - 1];
+        candidates = all.filter(g => g.id !== last);
+        if (!candidates.length) candidates = all;
+      }
 
       const weighted = [];
       candidates.forEach(g => {
@@ -41,7 +35,8 @@
         const slots = Math.max(1, Math.round(w * 10));
         for (let i = 0; i < slots; i++) weighted.push(g);
       });
-      return weighted[Math.floor(Math.random() * weighted.length)];
+      const pick = weighted[Math.floor(Math.random() * weighted.length)];
+      return pick || all[Math.floor(Math.random() * all.length)];
     }
   };
 
