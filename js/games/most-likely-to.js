@@ -3,8 +3,13 @@
   window.DOERAK_GAMES = window.DOERAK_GAMES || {};
   window.DOERAK_GAMES.mostLikelyTo = {
     id: 'mostLikelyTo',
-    name: 'MOST LIKELY TO',
-    desc: 'Op 3 wijst iedereen wie het meest past. Wie de meeste vingers krijgt, drinkt.',
+    name: 'WIJSVINGER',
+    desc: 'Op "3" wijst iedereen naar wie het meest past. Meeste vingers? Drinken.',
+    howto: [
+      'Lees de vraag voor.',
+      'Op de countdown wijst iedereen tegelijk.',
+      'Tap op de naam met de meeste vingers — die drinkt.'
+    ],
     long: false,
     weight: { chill: 1.0, normaal: 1.2, heftig: 1.0 },
 

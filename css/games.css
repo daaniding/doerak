@@ -787,6 +787,42 @@
   text-shadow: 7px 7px 0 var(--ink);
 }
 
+/* === KETTINGVRAAG question rotator === */
+.kv-question {
+  background: var(--cream);
+  color: var(--ink);
+  border: 3px solid var(--ink);
+  border-radius: var(--r-md);
+  padding: var(--s-3) var(--s-4);
+  box-shadow: var(--shadow-pop);
+  font-family: var(--font-display);
+  font-size: clamp(20px, 5.6vw, 28px);
+  line-height: 1.15;
+  text-align: center;
+  letter-spacing: -0.01em;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.kv-question.flash {
+  animation: kvFlash 360ms var(--ease-pop);
+}
+@keyframes kvFlash {
+  0%   { transform: scale(0.92); background: var(--yellow); }
+  60%  { transform: scale(1.04); background: var(--cream); }
+  100% { transform: scale(1); }
+}
+.kv-pass-label {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 8vw, 44px);
+  color: var(--coral);
+  -webkit-text-stroke: 3px var(--ink);
+  text-shadow: 4px 4px 0 var(--ink);
+  animation: pulse 1s infinite;
+}
+
 /* === Tap-tally (Juffen + Cheers manual play) === */
 .tap-tally {
   display: flex;

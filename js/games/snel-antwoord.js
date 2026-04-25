@@ -4,8 +4,13 @@
   window.DOERAK_GAMES = window.DOERAK_GAMES || {};
   window.DOERAK_GAMES.snelAntwoord = {
     id: 'snelAntwoord',
-    name: 'SNEL ANTWOORD',
-    desc: '3 seconden om een antwoord eruit te flappen. Te traag of slecht? Drinken.',
+    name: 'FLITS',
+    desc: 'Random vraag, 3 seconden om te antwoorden. Te traag of slecht? Drinken.',
+    howto: [
+      'Random speler krijgt random vraag.',
+      '3 seconden countdown — geen tijd om te denken.',
+      'Groep beoordeelt: GOED of NIET GOED.'
+    ],
     long: false,
     weight: { chill: 1.0, normaal: 1.2, heftig: 1.2 },
 

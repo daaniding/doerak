@@ -44,7 +44,7 @@
     twentyone: 'blush', buzz: 'yellow', categorieTimer: 'coral',
     waterval: 'sky', blindeKeuze: 'mint', regelRoulette: 'yellow',
     buddy: 'coral', dubbelPech: 'coral', uitdelen: 'mint', guess5: 'yellow',
-    snelAntwoord: 'mint'
+    snelAntwoord: 'mint', wieLiegt: 'coral', besteVrienden: 'mint'
   };
   function setTheme(t) {
     if (t) document.body.setAttribute('data-theme', t);
@@ -94,7 +94,7 @@
     mount(s => {
       s.classList.add('welcome');
       s.appendChild(U.el('div', { class: 'marker', text: 'NL · 18+ · ★' }));
-      s.appendChild(U.el('div', { class: 'marker right', text: '17 GAMES' }));
+      s.appendChild(U.el('div', { class: 'marker right', text: '19 GAMES' }));
 
       // floating decorative SVGs
       ['cup', 'sparkle', 'confetti', 'bottle'].forEach((d, i) => {
@@ -707,12 +707,27 @@
   function showIntro(view, game, onStart) {
     view.innerHTML = '';
     const wrap = U.el('div', { class: 'game-intro' });
+    const top = U.el('div', { class: 'intro-top' });
+    const titleCol = U.el('div', { class: 'intro-title' });
+    titleCol.appendChild(U.el('div', { class: 'badge', text: 'NU SPELEN' }));
+    titleCol.appendChild(U.el('div', { class: 'gname', text: game.name }));
+    top.appendChild(titleCol);
     const heroIcon = U.el('div', { class: 'game-icon-hero' });
     if (DOERAK_ICONS.game[game.id]) heroIcon.innerHTML = DOERAK_ICONS.game[game.id]();
-    wrap.appendChild(heroIcon);
-    wrap.appendChild(U.el('div', { class: 'badge', text: 'NU SPELEN' }));
-    wrap.appendChild(U.el('div', { class: 'gname', text: game.name }));
+    top.appendChild(heroIcon);
+    wrap.appendChild(top);
+
     wrap.appendChild(U.el('div', { class: 'gdesc', text: game.desc }));
+
+    if (game.howto && game.howto.length) {
+      const howto = U.el('div', { class: 'gintro-howto' });
+      howto.appendChild(U.el('div', { class: 'kicker coral', style: { alignSelf: 'flex-start' }, text: 'HOE WERKT HET?' }));
+      const ul = U.el('ul', { class: 'gintro-bullets' });
+      game.howto.forEach(b => ul.appendChild(U.el('li', { text: b })));
+      howto.appendChild(ul);
+      wrap.appendChild(howto);
+    }
+
     wrap.appendChild(U.el('button', { class: 'btn full primary', text: 'START', onClick: () => { AudioFX.beep(); onStart(); } }));
     view.appendChild(wrap);
   }

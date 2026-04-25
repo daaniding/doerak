@@ -6,7 +6,12 @@
   window.DOERAK_GAMES.buzz = {
     id: 'buzz',
     name: 'JUFFEN',
-    desc: 'Speel een potje juffen aan tafel. Tap iemand z\'n naam telkens als ze moeten drinken.',
+    desc: 'Klassiek juffen aan tafel. Tap wie er foutgaat.',
+    howto: [
+      'Tel om de beurt op (1, 2, 3, ...).',
+      'Bij multiples van 7 of getallen mét 7: zeg "juf".',
+      'Foutje? Tap je naam — slok wordt geregistreerd voor de promille-meter.'
+    ],
     long: false,
     weight: { chill: 0.7, normaal: 1.0, heftig: 1.2 },
 

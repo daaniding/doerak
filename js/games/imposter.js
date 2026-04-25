@@ -3,8 +3,13 @@
   window.DOERAK_GAMES = window.DOERAK_GAMES || {};
   window.DOERAK_GAMES.imposter = {
     id: 'imposter',
-    name: 'IMPOSTER',
-    desc: 'Iedereen krijgt een woord — behalve de imposter. Praat erover, raad wie het is.',
+    name: 'DE MOL',
+    desc: 'Iedereen ziet hetzelfde woord. Behalve één. Vind de mol.',
+    howto: [
+      'Geef door, ieder ziet zijn eigen woord (de mol ziet iets anders).',
+      'Om de beurt zegt iedereen 1 woord dat met het thema te maken heeft.',
+      'Stem wie de mol is. Goed = mol drinkt. Mis = jij drinkt.'
+    ],
     long: true,
     weight: { chill: 0.5, normaal: 0.7, heftig: 0.7 },
 

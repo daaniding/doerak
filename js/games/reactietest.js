@@ -3,8 +3,13 @@
   window.DOERAK_GAMES = window.DOERAK_GAMES || {};
   window.DOERAK_GAMES.reactietest = {
     id: 'reactietest',
-    name: 'REACTIETEST',
-    desc: 'Tap zo snel mogelijk zodra het scherm groen wordt. Slootste drinkt het meest.',
+    name: 'GROEN LICHT',
+    desc: 'Tap zodra het scherm groen wordt. Slootste van de groep krijgt de meeste slokken.',
+    howto: [
+      'Iedereen krijgt 3 beurten.',
+      'Wacht tot het scherm groen wordt en tap zo snel mogelijk.',
+      'Te vroeg = direct slokken. Top 3 traagste drinkt aan het eind.'
+    ],
     long: false,
     weight: { chill: 1.0, normaal: 1.0, heftig: 1.0 },
 

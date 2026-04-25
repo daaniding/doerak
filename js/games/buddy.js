@@ -3,8 +3,13 @@
   window.DOERAK_GAMES = window.DOERAK_GAMES || {};
   window.DOERAK_GAMES.buddy = {
     id: 'buddy',
-    name: 'BUDDY SYSTEM',
-    desc: 'Twee spelers worden buddies — wat de één drinkt, drinkt de ander ook.',
+    name: 'SAMEN UIT',
+    desc: 'Twee buddies voor 3 rondes. Wat één drinkt, drinkt de ander ook.',
+    howto: [
+      'Loting kiest twee buddies.',
+      'Volgende 3 rondes drinken jullie SAMEN — krijg jij een opdracht? Je buddy ook.',
+      'Daarna verdwijnt de koppeling.'
+    ],
     long: false,
     weight: { chill: 1.0, normaal: 1.0, heftig: 1.0 },
 

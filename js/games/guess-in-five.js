@@ -3,8 +3,13 @@
   window.DOERAK_GAMES = window.DOERAK_GAMES || {};
   window.DOERAK_GAMES.guess5 = {
     id: 'guess5',
-    name: 'GUESS IN 5',
-    desc: 'Noem 3 dingen voordat de tijd op is. 5 seconden, geen langer.',
+    name: 'VIJF SECONDEN',
+    desc: '5 seconden om 3 dingen in een categorie te noemen. Of drinkt zelf.',
+    howto: [
+      'App kiest een speler en een categorie.',
+      'Tikt 5 sec terug — noem 3 dingen.',
+      'Gehaald = je mag iemand laten drinken. Niet = je drinkt zelf.'
+    ],
     long: false,
     weight: { chill: 1.0, normaal: 1.0, heftig: 1.0 },
 

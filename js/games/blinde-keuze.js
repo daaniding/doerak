@@ -3,8 +3,13 @@
   window.DOERAK_GAMES = window.DOERAK_GAMES || {};
   window.DOERAK_GAMES.blindeKeuze = {
     id: 'blindeKeuze',
-    name: 'BLINDE KEUZE',
-    desc: 'Kies 1 van 3 deuren. Wat erachter zit, weet je pas als hij open is.',
+    name: 'DRIE DEUREN',
+    desc: 'Eén speler kiest blind één van drie deuren. Veel succes.',
+    howto: [
+      'App kiest een speler die de keuze maakt.',
+      'Drie deuren — niemand weet wat erachter zit.',
+      '40% licht, 40% medium, 20% zwaar (incl. opdracht).'
+    ],
     long: false,
     weight: { chill: 0.9, normaal: 1.0, heftig: 1.2 },
 

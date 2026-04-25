@@ -3,8 +3,13 @@
   window.DOERAK_GAMES = window.DOERAK_GAMES || {};
   window.DOERAK_GAMES.categorieTimer = {
     id: 'categorieTimer',
-    name: 'CATEGORIE TIMER',
-    desc: '8 seconden om iets in deze categorie te noemen. Geen herhaling.',
+    name: 'BENOEM HET',
+    desc: 'Om de beurt iets noemen in een categorie. Te traag = drinken.',
+    howto: [
+      'App geeft een categorie (bv. "voetbalclubs").',
+      'Per beurt heb je 8 seconden om iets te noemen.',
+      'Te laat, herhaling of fout = drinkt.'
+    ],
     long: false,
     weight: { chill: 1.0, normaal: 1.1, heftig: 1.0 },
 

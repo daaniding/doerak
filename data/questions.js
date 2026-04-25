@@ -1,6 +1,40 @@
 /* DOERAK content. All Dutch, casual 19-yo tone. Drink amounts via {{drink:N}}. */
 window.DOERAK_DATA = {
 
+  /* Beste Vrienden — vragen over je vriend (B). {{name}} = de andere speler */
+  besteVrienden: [
+    "Wat is de tweede naam van {{name}}?",
+    "Wat is {{name}} z'n favoriete drankje?",
+    "Hoe heet {{name}} z'n eerste huisdier?",
+    "Wat eet {{name}} het liefst tussen de middag?",
+    "Hoeveel broers en zussen heeft {{name}}?",
+    "Wat is {{name}} z'n favoriete kleur?",
+    "Welke leraar haatte {{name}} het meest?",
+    "Wat was de laatste serie die {{name}} keek?",
+    "Wat doet {{name}} z'n moeder voor werk?",
+    "Welke vakantie was {{name}} z'n favoriete ooit?",
+    "Wat is de naam van {{name}} z'n laatste ex?",
+    "Welk getal noemt {{name}} altijd in spelletjes?",
+    "Welk drankje van de bar bestelt {{name}} altijd?",
+    "Op welk leeftijd had {{name}} z'n eerste kus?",
+    "Wat is {{name}} z'n grootste angst?",
+    "Welke film kan {{name}} keer op keer kijken?",
+    "Wat is {{name}} z'n favoriete song van dit moment?",
+    "Welke hobby probeerde {{name}} en gaf weer op?",
+    "Hoe lang douche {{name}} ongeveer?",
+    "Welk land wil {{name}} ooit nog naartoe?",
+    "Wat is {{name}} z'n schoenmaat?",
+    "Met welk woord beschrijft {{name}} zichzelf het liefst?",
+    "Welk feestje was de slechtste die {{name}} heeft gehad?",
+    "Wat is de eerste app die {{name}} 's ochtends opent?",
+    "Welk eten kan {{name}} echt niet maken?",
+    "Welke beroepskeuze heeft {{name}} bijna gemaakt?",
+    "Wat is {{name}} z'n favoriete dag van de week?",
+    "Welk huisdier zou {{name}} nemen als hij kon?",
+    "Welk merk schoenen draagt {{name}} bijna altijd?",
+    "Wat is de laatste film die {{name}} in de bios heeft gezien?"
+  ],
+
   /* Snel Antwoord — quick answer questions */
   snelAntwoord: [
     "Noem 3 NL-rappers",

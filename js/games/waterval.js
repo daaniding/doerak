@@ -4,7 +4,12 @@
   window.DOERAK_GAMES.waterval = {
     id: 'waterval',
     name: 'WATERVAL',
-    desc: 'Eén start, de rest volgt om de beurt. Niemand stopt voor de persoon voor je.',
+    desc: 'Eén start, de rest volgt. Niemand stopt voor de persoon vóór hem.',
+    howto: [
+      'De starter begint met drinken.',
+      'Volg in zitvolgorde — zodra je linkerbuur stopt, mag jij ook.',
+      'Iedereen drinkt langer dan zijn voorganger.'
+    ],
     long: false,
     weight: { chill: 0.7, normaal: 0.9, heftig: 1.1 },
 

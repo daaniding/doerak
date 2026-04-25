@@ -250,6 +250,26 @@
         fill="var(--mint)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/>
       <path d="M34 18 L24 30 L30 30 L28 40 L40 26 L34 26 L36 18 Z"
         fill="var(--yellow)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>
+    `),
+
+    /* 🤥 Wie Liegt — Pinocchio nose / mask */
+    wieLiegt: () => wrap(`
+      <path d="M12 18 L52 18 L48 32 Q48 44 32 50 Q16 44 16 32 Z"
+        fill="var(--coral)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/>
+      <ellipse cx="22" cy="28" rx="5" ry="3" fill="var(--cream)" stroke="var(--ink)" stroke-width="2.5"/>
+      <ellipse cx="42" cy="28" rx="5" ry="3" fill="var(--cream)" stroke="var(--ink)" stroke-width="2.5"/>
+      <circle cx="22" cy="28" r="1.5" fill="var(--ink)"/>
+      <circle cx="42" cy="28" r="1.5" fill="var(--ink)"/>
+      <path d="M30 36 L52 28 L52 32 L30 40 Z" fill="var(--yellow)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>
+    `),
+
+    /* 🤝 Beste Vrienden — handshake */
+    besteVrienden: () => wrap(`
+      <path d="M6 36 L20 22 Q24 18 28 22 L34 28 Q38 32 34 36 L26 44 Q22 48 18 44 Z"
+        fill="var(--coral)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M58 36 L44 22 Q40 18 36 22 L30 28 Q26 32 30 36 L38 44 Q42 48 46 44 Z"
+        fill="var(--mint)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="32" cy="32" r="3" fill="var(--yellow)" stroke="var(--ink)" stroke-width="2"/>
     `)
   };
 

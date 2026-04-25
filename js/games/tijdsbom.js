@@ -3,8 +3,13 @@
   window.DOERAK_GAMES = window.DOERAK_GAMES || {};
   window.DOERAK_GAMES.tijdsbom = {
     id: 'tijdsbom',
-    name: 'TIJDSBOM',
-    desc: 'Geef de telefoon door. Wie hem vasthoudt als ie afgaat, is de pineut.',
+    name: 'HETE AARDAPPEL',
+    desc: 'De telefoon is heet. Geef door en hoop dat ie niet bij jou ontploft.',
+    howto: [
+      'Geef de telefoon zo snel mogelijk door.',
+      'Een verborgen timer (15-45 sec) tikt af.',
+      'Wie hem vasthoudt als ie afgaat — drinkt.'
+    ],
     long: false,
     weight: { chill: 1.2, normaal: 1.4, heftig: 1.6 },
 

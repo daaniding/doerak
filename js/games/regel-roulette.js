@@ -3,8 +3,13 @@
   window.DOERAK_GAMES = window.DOERAK_GAMES || {};
   window.DOERAK_GAMES.regelRoulette = {
     id: 'regelRoulette',
-    name: 'REGEL ROULETTE',
-    desc: 'Draai aan het wiel. Wat je krijgt, blijft de rest van de avond gelden.',
+    name: 'HET RAD',
+    desc: 'Spin het rad. Wat eruit komt geldt de hele avond.',
+    howto: [
+      'Tap om te draaien.',
+      'De landing geeft je een nieuwe huisregel.',
+      'De regel blijft zichtbaar bovenin tijdens alle volgende spellen.'
+    ],
     long: false,
     weight: { chill: 0.8, normaal: 1.0, heftig: 1.0 },
 

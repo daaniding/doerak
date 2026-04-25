@@ -3,8 +3,13 @@
   window.DOERAK_GAMES = window.DOERAK_GAMES || {};
   window.DOERAK_GAMES.drunkocracy = {
     id: 'drunkocracy',
-    name: 'DRUNK-OCRACY',
-    desc: 'Iedereen stemt anoniem. Minderheid drinkt. 50/50 = iedereen drinkt.',
+    name: 'STEMHOK',
+    desc: 'Anonieme polling. Minderheid drinkt.',
+    howto: [
+      'Geef de telefoon door, iedereen stemt anoniem.',
+      'Bij de uitslag drinkt de minderheid.',
+      '50/50? Iedereen drinkt.'
+    ],
     long: false,
     weight: { chill: 1.0, normaal: 1.0, heftig: 0.9 },
 

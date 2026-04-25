@@ -4,8 +4,13 @@
   window.DOERAK_GAMES = window.DOERAK_GAMES || {};
   window.DOERAK_GAMES.twentyone = {
     id: 'twentyone',
-    name: 'CHEERS TO THE GOVERNOR',
-    desc: 'Tel met de groep tot 21. Wie 21 zegt maakt een nieuwe regel. Tap wie drinkt bij fouten.',
+    name: 'CHEERS',
+    desc: 'Cheers to the Governor. Tel met de groep tot 21. Wie 21 zegt maakt een regel.',
+    howto: [
+      'Tel om de beurt naar 21 (volgens de regels die je samen afspreekt).',
+      'Bij fouten: tap die persoon — slok wordt geregistreerd.',
+      'Wie 21 zegt mag een nieuwe huisregel maken.'
+    ],
     long: false,
     weight: { chill: 0.6, normaal: 0.9, heftig: 1.0 },
 

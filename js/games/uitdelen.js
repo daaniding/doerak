@@ -3,8 +3,13 @@
   window.DOERAK_GAMES = window.DOERAK_GAMES || {};
   window.DOERAK_GAMES.uitdelen = {
     id: 'uitdelen',
-    name: 'UITDELEN',
-    desc: 'Eén speler heeft de macht — verdeel 5 slokken over de groep.',
+    name: 'SLOKKENBAAS',
+    desc: 'Eén speler is de baas en mag 5 slokken verdelen. Wijs gebruiken.',
+    howto: [
+      'App kiest een baas.',
+      'Verdeel 5 slokken via +/− knoppen over de groep.',
+      'Bevestigen — iedereen drinkt zijn deel.'
+    ],
     long: false,
     weight: { chill: 0.9, normaal: 1.0, heftig: 1.0 },
 

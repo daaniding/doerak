@@ -3,8 +3,13 @@
   window.DOERAK_GAMES = window.DOERAK_GAMES || {};
   window.DOERAK_GAMES.dubbelPech = {
     id: 'dubbelPech',
-    name: 'DUBBEL PECH',
-    desc: 'Twee spelers krijgen samen één straf. Loting telt.',
+    name: 'DUO PECH',
+    desc: 'Twee gelote spelers delen één straf. Of allebei drinken.',
+    howto: [
+      'App lottet twee spelers.',
+      'Ze krijgen één gedeelde straf.',
+      'Vaak een keuze: opdracht doen of allebei drinken.'
+    ],
     long: false,
     weight: { chill: 0.9, normaal: 1.0, heftig: 1.0 },
 
