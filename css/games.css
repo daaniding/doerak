@@ -1,16 +1,8 @@
-/* DOERAK — minigame styles. Polished pass.
- *
- * TYPE HIERARCHY:
- *  - Tier 1 HERO: huge single-word/number, stroke + offset shadow OK.
- *      .sociale-headline, .bomb-result, .reveal-counter (in screens.css),
- *      .mlt-countdown, .buzz-num, .cat-timer, .guess-num, .hotseat-timer,
- *      .target-num (21), .uit-budget, .reactie-stage.go (66px)
- *  - Tier 2 HEADING: clean cream display text with light drop-shadow only.
- *      .game .gh-name, .hotseat-spotlight .target, .who, .cat-turn (cream pill)
- *  - Tier 3 BODY: cream/lime card with ink text. NO stroke, NO heavy shadow.
- *      .mlt-question, .paranoia-question, .bomb-message, .sociale-reason,
- *      .blinde-result, .hotseat-suggestion, etc.
- */
+/* DOERAK — minigame styles. Sunset-pop palette.
+ * Type tier discipline:
+ *  - HERO (stroke + offset): single-word headlines, big numbers
+ *  - HEADING (drop-shadow): game name, target name, section labels
+ *  - BODY (cream card, ink text): questions, instructions */
 
 /* === Generic game framing === */
 .game {
@@ -29,10 +21,10 @@
 }
 .game .gh-name {
   font-family: var(--font-display);
-  font-size: clamp(22px, 6vw, 28px);
+  font-size: clamp(22px, 6vw, 30px);
   letter-spacing: -0.01em;
-  color: var(--cream);
-  text-shadow: 2px 2px 0 var(--ink), 3px 3px 0 var(--ink);
+  color: var(--ink);
+  text-shadow: 3px 3px 0 var(--coral);
   line-height: 1;
   flex-shrink: 1;
   min-width: 0;
@@ -43,7 +35,7 @@
   font-size: 10px;
   letter-spacing: 0.14em;
   background: var(--ink);
-  color: var(--lime);
+  color: var(--yellow);
   padding: 5px 10px;
   border-radius: var(--r-pill);
   text-transform: uppercase;
@@ -67,37 +59,21 @@
 }
 .game .game-footer .btn { flex: 1; }
 
-/* General — long unspaced player names should not break layout */
-.game .game-body strong, .reveal-name, .seat, .role-card, .imposter-card .word {
-  word-break: break-word;
-}
-
-/* === Tier 3: body text card (used by many games) === */
+/* Tier 3 body — readable card */
 .body-card {
   background: var(--cream);
   color: var(--ink);
   border: 3px solid var(--ink);
   border-radius: var(--r-md);
   padding: var(--s-4);
-  box-shadow: 0 5px 0 0 var(--ink);
+  box-shadow: var(--shadow-pop);
   font-family: var(--font-body);
   font-weight: 800;
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.4;
   text-align: center;
 }
-
-/* Big number with hero stroke — utility */
-.hero-num {
-  font-family: var(--font-display);
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum";
-  text-align: center;
-  color: var(--lime);
-  -webkit-text-stroke: 4px var(--ink);
-  text-shadow: 6px 6px 0 var(--ink);
-  line-height: 0.92;
-}
+.body-card strong { color: var(--coral-deep); }
 
 /* === Tijdsbom === */
 .bomb {
@@ -112,7 +88,7 @@
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: radial-gradient(circle, var(--ink-soft) 0%, var(--ink) 80%);
+  background: var(--ink);
   border: 4px solid var(--ink);
   box-shadow: 0 0 0 6px var(--cream), 0 0 0 10px var(--ink);
 }
@@ -120,7 +96,7 @@
   position: absolute;
   top: -22px; left: 50%;
   width: 8px; height: 36px;
-  background: var(--cream);
+  background: var(--ink);
   transform: translateX(-50%) rotate(-20deg);
   transform-origin: bottom center;
 }
@@ -132,35 +108,39 @@
   background: var(--yellow);
   border-radius: 50%;
   transform: translateX(-50%);
-  box-shadow: 0 0 28px var(--orange);
+  box-shadow: 0 0 28px var(--coral);
   animation: fuseSpark 220ms infinite alternate;
 }
 @keyframes fuseSpark {
   0% { transform: translateX(-50%) scale(0.85); opacity: 0.8; }
   100% { transform: translateX(-50%) scale(1.25); opacity: 1; }
 }
-.bomb .skull { font-size: clamp(64px, 22vw, 92px); line-height: 1; }
-.bomb.danger .bomb-circle { animation: bombPulseHard 0.36s infinite; }
-@keyframes bombPulseHard {
-  0%, 100% { box-shadow: 0 0 0 6px var(--cream), 0 0 0 10px var(--red), 0 0 80px var(--orange); }
-  50%      { box-shadow: 0 0 0 6px var(--cream), 0 0 0 14px var(--red), 0 0 120px var(--red); }
+.bomb .skull-svg {
+  width: clamp(64px, 22vw, 92px);
+  height: auto;
 }
-/* Tier 3 body — readable instruction */
+.bomb.danger .bomb-circle {
+  animation: bombPulseHard 0.36s infinite;
+  background: var(--coral-deep);
+}
+@keyframes bombPulseHard {
+  0%, 100% { box-shadow: 0 0 0 6px var(--cream), 0 0 0 10px var(--coral-deep), 0 0 80px var(--coral); }
+  50%      { box-shadow: 0 0 0 6px var(--cream), 0 0 0 14px var(--coral-deep), 0 0 120px var(--coral-deep); }
+}
 .bomb-message {
   background: var(--cream);
   color: var(--ink);
   border: 3px solid var(--ink);
   border-radius: var(--r-md);
   padding: var(--s-3) var(--s-4);
-  box-shadow: 0 5px 0 0 var(--ink);
+  box-shadow: var(--shadow-pop);
   font-family: var(--font-body);
   font-weight: 800;
   font-size: 15px;
   line-height: 1.4;
   text-align: center;
 }
-.bomb-message strong { color: var(--pink-deep); }
-/* Tier 1 hero — BOEM */
+.bomb-message strong { color: var(--coral-deep); }
 .bomb-result {
   font-family: var(--font-display);
   font-size: clamp(72px, 22vw, 110px);
@@ -187,14 +167,14 @@
   user-select: none;
   font-family: var(--font-display);
   font-size: clamp(24px, 7vw, 32px);
-  box-shadow: 0 6px 0 0 var(--ink);
+  box-shadow: var(--shadow-pop);
   transition: background 80ms;
   min-height: 200px;
   padding: var(--s-4);
 }
-.reactie-stage.armed { background: var(--red); color: var(--cream); }
-.reactie-stage.go { background: var(--lime); color: var(--ink); font-size: clamp(48px, 14vw, 64px); }
-.reactie-stage.fail { background: var(--orange); color: var(--cream); }
+.reactie-stage.armed { background: var(--coral-deep); color: var(--cream); }
+.reactie-stage.go { background: var(--mint); color: var(--ink); font-size: clamp(48px, 14vw, 64px); }
+.reactie-stage.fail { background: var(--coral); color: var(--cream); }
 .reactie-leaderboard { display: flex; flex-direction: column; gap: var(--s-2); }
 .reactie-leaderboard .row {
   display: grid;
@@ -206,7 +186,7 @@
   color: var(--ink);
   border: 2.5px solid var(--ink);
   border-radius: var(--r-md);
-  box-shadow: 0 3px 0 0 var(--ink);
+  box-shadow: var(--shadow-pop-sm);
 }
 .reactie-leaderboard .row .nm {
   font-family: var(--font-display);
@@ -221,51 +201,48 @@
   font-weight: 900;
   font-size: 12px;
   font-variant-numeric: tabular-nums;
-  color: var(--pink-deep);
+  color: var(--coral-deep);
   white-space: nowrap;
 }
 
 /* === Most Likely To === */
-/* Tier 3 body — readable question on a card */
 .mlt-question {
   background: var(--cream);
   color: var(--ink);
   border: 3px solid var(--ink);
   border-radius: var(--r-md);
   padding: var(--s-4);
-  box-shadow: 0 5px 0 0 var(--ink);
+  box-shadow: var(--shadow-pop);
   font-family: var(--font-display);
   font-size: clamp(22px, 6.2vw, 30px);
   line-height: 1.1;
   text-align: center;
   letter-spacing: -0.01em;
 }
-/* Tier 1 hero countdown */
 .mlt-countdown {
   font-family: var(--font-display);
   font-variant-numeric: tabular-nums;
   font-size: clamp(120px, 36vw, 180px);
   line-height: 0.9;
   text-align: center;
-  color: var(--lime);
+  color: var(--yellow);
   -webkit-text-stroke: 5px var(--ink);
   text-shadow: 7px 7px 0 var(--ink);
 }
-/* Tier 2 — readable result */
 .mlt-points {
   font-family: var(--font-display);
   font-size: clamp(22px, 6vw, 32px);
   text-align: center;
   color: var(--ink);
-  background: var(--lime);
+  background: var(--mint);
   padding: 14px 18px;
   border-radius: var(--r-md);
   border: 3px solid var(--ink);
-  box-shadow: 0 5px 0 0 var(--ink);
+  box-shadow: var(--shadow-pop);
   line-height: 1.15;
 }
 
-/* === Imposter / Saboteur / Paranoia / Drunkocracy / etc — pass-the-phone shared === */
+/* === Imposter / pass-the-phone === */
 .imposter-pass {
   display: flex;
   flex-direction: column;
@@ -281,19 +258,18 @@
   border-radius: var(--r-md);
   padding: var(--s-7) var(--s-4);
   text-align: center;
-  box-shadow: 0 8px 0 0 var(--ink);
+  box-shadow: var(--shadow-card);
 }
 .imposter-card .word {
   font-family: var(--font-display);
   font-size: clamp(40px, 12vw, 64px);
   letter-spacing: 0;
-  color: var(--purple);
+  color: var(--coral);
   line-height: 1;
 }
-.imposter-card.imp { background: var(--red); color: var(--cream); }
+.imposter-card.imp { background: var(--coral-deep); color: var(--cream); }
 .imposter-card.imp .word { color: var(--cream); }
 
-/* Pass-the-phone target name (cream pill, single line, ellipsis if too long) */
 .pass-name {
   font-family: var(--font-display);
   font-size: clamp(32px, 9vw, 56px);
@@ -302,7 +278,7 @@
   padding: var(--s-3) var(--s-4);
   border: 3px solid var(--ink);
   border-radius: var(--r-pill);
-  box-shadow: 0 5px 0 0 var(--ink);
+  box-shadow: var(--shadow-pop);
   display: inline-block;
   align-self: center;
   max-width: 100%;
@@ -319,7 +295,7 @@
   border: 3px solid var(--ink);
   border-radius: var(--r-md);
   padding: var(--s-4);
-  box-shadow: 0 5px 0 0 var(--ink);
+  box-shadow: var(--shadow-pop);
   font-family: var(--font-display);
   font-size: clamp(22px, 6vw, 30px);
   line-height: 1.15;
@@ -339,7 +315,7 @@
   font-size: clamp(20px, 5.5vw, 26px);
   text-align: left;
   cursor: pointer;
-  box-shadow: 0 5px 0 0 var(--ink);
+  box-shadow: var(--shadow-pop);
   line-height: 1.15;
 }
 .dock-opt:active { transform: translateY(3px); box-shadow: 0 2px 0 0 var(--ink); }
@@ -355,7 +331,7 @@
 .dock-result-bar > i {
   position: absolute;
   inset: 0 auto 0 0;
-  background: var(--pink);
+  background: var(--coral);
   width: 0;
   transition: width 800ms var(--ease-out);
 }
@@ -365,8 +341,9 @@
 .hotseat-spotlight .target {
   font-family: var(--font-display);
   font-size: clamp(36px, 11vw, 64px);
-  color: var(--cream);
-  text-shadow: 3px 3px 0 var(--ink), 5px 5px 0 var(--ink);
+  color: var(--coral);
+  -webkit-text-stroke: 3px var(--ink);
+  text-shadow: 5px 5px 0 var(--ink);
   animation: pulse 1.4s infinite;
   line-height: 1;
   word-break: break-word;
@@ -391,7 +368,7 @@
   border: 3px solid var(--ink);
   border-radius: var(--r-md);
   padding: var(--s-3);
-  box-shadow: 0 4px 0 0 var(--ink);
+  box-shadow: var(--shadow-pop-sm);
   text-align: center;
   line-height: 1.4;
 }
@@ -403,8 +380,8 @@
   text-align: center;
   font-family: var(--font-display);
   font-size: clamp(28px, 8vw, 36px);
-  color: var(--cream);
-  text-shadow: 3px 3px 0 var(--ink);
+  color: var(--ink);
+  text-shadow: 3px 3px 0 var(--coral);
   line-height: 1;
   word-break: break-word;
 }
@@ -413,13 +390,13 @@
   font-family: var(--font-display);
   font-variant-numeric: tabular-nums;
   font-size: clamp(80px, 26vw, 140px);
-  color: var(--lime);
+  color: var(--coral);
   -webkit-text-stroke: 5px var(--ink);
   text-shadow: 7px 7px 0 var(--ink);
   line-height: 0.92;
 }
 .twentyone .keypad { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2); }
-.twentyone .keypad .btn { font-size: 14px; min-height: 64px; padding: var(--s-2) var(--s-3); line-height: 1.1; }
+.twentyone .keypad .btn { font-size: 16px; min-height: 64px; }
 .twentyone .ruleinput { display: flex; gap: var(--s-2); }
 .twentyone .ruleinput input { font-size: 18px; padding: 10px 16px; }
 .twentyone .quick-rules { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -431,17 +408,17 @@
   font-variant-numeric: tabular-nums;
   font-size: clamp(120px, 38vw, 200px);
   line-height: 0.9;
-  color: var(--lime);
+  color: var(--yellow);
   -webkit-text-stroke: 5px var(--ink);
   text-shadow: 7px 7px 0 var(--ink);
 }
 .buzz-actions { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2); }
-.buzz-actions .btn { font-size: 14px; min-height: 64px; padding: var(--s-2) var(--s-3); line-height: 1.1; }
+.buzz-actions .btn { font-size: 16px; min-height: 64px; }
 .buzz-rules {
   font-size: 12px;
   font-family: var(--font-body);
   color: var(--ink);
-  background: var(--lime);
+  background: var(--mint);
   border: 2.5px solid var(--ink);
   border-radius: var(--r-pill);
   padding: 6px 12px;
@@ -458,8 +435,9 @@
   font-family: var(--font-display);
   font-size: clamp(32px, 9vw, 48px);
   line-height: 1.05;
-  color: var(--cream);
-  text-shadow: 3px 3px 0 var(--ink), 5px 5px 0 var(--ink);
+  color: var(--coral);
+  -webkit-text-stroke: 3px var(--ink);
+  text-shadow: 4px 4px 0 var(--ink);
   word-break: break-word;
   padding: 0 var(--s-2);
 }
@@ -478,7 +456,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  box-shadow: 0 4px 0 0 var(--ink);
+  box-shadow: var(--shadow-pop-sm);
 }
 .cat-timer {
   text-align: center;
@@ -497,7 +475,7 @@
   width: min(78vw, 320px);
   aspect-ratio: 1;
   margin: 0 auto;
-  border: 4px dashed var(--cyan);
+  border: 4px dashed var(--sky);
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -511,13 +489,13 @@
   border: 2.5px solid var(--ink);
   border-radius: var(--r-pill);
   white-space: nowrap;
-  box-shadow: 0 3px 0 0 var(--ink);
+  box-shadow: var(--shadow-pop-sm);
   max-width: 90px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .water-circle .seat.start {
-  background: var(--lime);
+  background: var(--mint);
   font-size: 16px;
 }
 
@@ -539,7 +517,7 @@
   place-items: center;
   cursor: pointer;
   user-select: none;
-  box-shadow: 0 6px 0 0 var(--ink);
+  box-shadow: var(--shadow-pop);
   animation: doorTremble 1.6s infinite;
 }
 .door:nth-child(2) { animation-delay: 0.4s; transform: rotate(0.5deg); }
@@ -551,26 +529,26 @@
 .door .num {
   font-family: var(--font-display);
   font-size: clamp(48px, 14vw, 80px);
-  color: var(--pink-deep);
+  color: var(--coral);
 }
 .door:active { transform: scale(0.96); }
 .door.opened .num { display: none; }
-.door.outcome-light  { background: var(--lime); }
-.door.outcome-medium { background: var(--orange); color: var(--cream); }
-.door.outcome-heavy  { background: var(--red); color: var(--cream); }
+.door.outcome-light  { background: var(--mint); }
+.door.outcome-medium { background: var(--coral); color: var(--cream); }
+.door.outcome-heavy  { background: var(--coral-deep); color: var(--cream); }
 .blinde-result {
   background: var(--cream);
   color: var(--ink);
   border: 3px solid var(--ink);
   border-radius: var(--r-md);
   padding: var(--s-4);
-  box-shadow: 0 5px 0 0 var(--ink);
+  box-shadow: var(--shadow-pop);
   font-family: var(--font-display);
   font-size: clamp(20px, 5.5vw, 26px);
   text-align: center;
   line-height: 1.15;
 }
-.blinde-result strong { color: var(--pink-deep); }
+.blinde-result strong { color: var(--coral-deep); }
 
 /* === Regel Roulette === */
 .wheel-frame {
@@ -582,20 +560,20 @@
   border: 5px solid var(--ink);
   overflow: hidden;
   background: conic-gradient(
-    var(--pink) 0 30deg,
-    var(--lime) 30deg 60deg,
-    var(--purple) 60deg 90deg,
-    var(--orange) 90deg 120deg,
-    var(--cyan) 120deg 150deg,
-    var(--yellow) 150deg 180deg,
-    var(--pink) 180deg 210deg,
-    var(--lime) 210deg 240deg,
-    var(--purple) 240deg 270deg,
-    var(--orange) 270deg 300deg,
-    var(--cyan) 300deg 330deg,
-    var(--yellow) 330deg 360deg
+    var(--coral) 0 30deg,
+    var(--yellow) 30deg 60deg,
+    var(--mint) 60deg 90deg,
+    var(--sky) 90deg 120deg,
+    var(--coral-soft) 120deg 150deg,
+    var(--yellow-soft) 150deg 180deg,
+    var(--coral) 180deg 210deg,
+    var(--yellow) 210deg 240deg,
+    var(--mint) 240deg 270deg,
+    var(--sky) 270deg 300deg,
+    var(--coral-soft) 300deg 330deg,
+    var(--yellow-soft) 330deg 360deg
   );
-  box-shadow: 0 8px 0 0 var(--ink);
+  box-shadow: var(--shadow-card);
   transition: transform 4500ms cubic-bezier(0.18, 0.85, 0.22, 1);
 }
 .wheel-frame::after {
@@ -605,7 +583,7 @@
   transform: translate(-50%, -50%);
   width: 64px; height: 64px;
   background: var(--cream);
-  color: var(--pink);
+  color: var(--coral);
   border-radius: 50%;
   display: grid; place-items: center;
   border: 3px solid var(--ink);
@@ -618,8 +596,7 @@
   width: 0; height: 0;
   border-left: 18px solid transparent;
   border-right: 18px solid transparent;
-  border-top: 28px solid var(--cream);
-  filter: drop-shadow(0 4px 0 var(--ink));
+  border-top: 28px solid var(--ink);
   z-index: 3;
 }
 .wheel-rule {
@@ -630,7 +607,7 @@
   padding: var(--s-3);
   margin-top: var(--s-3);
   min-height: 60px;
-  box-shadow: 0 5px 0 0 var(--ink);
+  box-shadow: var(--shadow-pop);
   font-family: var(--font-body);
   font-weight: 800;
   font-size: 15px;
@@ -654,17 +631,17 @@
   padding: var(--s-3) var(--s-4);
   border: 3px solid var(--ink);
   border-radius: var(--r-md);
-  box-shadow: 0 5px 0 0 var(--ink);
+  box-shadow: var(--shadow-pop);
   max-width: 100%;
   word-break: break-word;
   line-height: 1.05;
 }
-.buddy-pair .b:first-child { transform: rotate(-2deg); background: var(--pink); color: var(--cream); }
-.buddy-pair .b:last-child  { transform: rotate(2deg);  background: var(--lime); }
+.buddy-pair .b:first-child { transform: rotate(-2deg); background: var(--coral); color: var(--cream); }
+.buddy-pair .b:last-child  { transform: rotate(2deg);  background: var(--mint); }
 .buddy-pair .plus {
   font-family: var(--font-display);
   font-size: clamp(40px, 12vw, 56px);
-  color: var(--cream);
+  color: var(--yellow);
   -webkit-text-stroke: 3px var(--ink);
   text-shadow: 3px 3px 0 var(--ink);
 }
@@ -680,10 +657,10 @@
   padding: var(--s-7) var(--s-4);
   border: 3px solid var(--ink);
   border-radius: var(--r-md);
-  box-shadow: 0 8px 0 0 var(--ink);
+  box-shadow: var(--shadow-card);
 }
 .role-card.saboteur {
-  background: var(--red);
+  background: var(--coral-deep);
   color: var(--cream);
   animation: pulse 1.2s infinite;
 }
@@ -694,7 +671,7 @@
   font-family: var(--font-display);
   font-size: clamp(56px, 16vw, 110px);
   line-height: 0.9;
-  color: var(--lime);
+  color: var(--coral);
   -webkit-text-stroke: 5px var(--ink);
   text-shadow: 6px 6px 0 var(--ink);
   animation: revealPop 600ms var(--ease-pop);
@@ -712,9 +689,9 @@
   padding: var(--s-4);
   border: 3px solid var(--ink);
   border-radius: var(--r-md);
-  box-shadow: 0 5px 0 0 var(--ink);
+  box-shadow: var(--shadow-pop);
 }
-.sociale-reason strong { color: var(--pink-deep); }
+.sociale-reason strong { color: var(--coral-deep); }
 
 /* === Dubbel Pech === */
 .dubbel-names {
@@ -728,8 +705,9 @@
   font-family: var(--font-display);
   font-size: clamp(32px, 9.5vw, 56px);
   letter-spacing: 0;
-  color: var(--cream);
-  text-shadow: 3px 3px 0 var(--ink), 5px 5px 0 var(--ink);
+  color: var(--coral);
+  -webkit-text-stroke: 3px var(--ink);
+  text-shadow: 4px 4px 0 var(--ink);
   line-height: 1;
   max-width: 100%;
   word-break: break-word;
@@ -737,8 +715,8 @@
 .dubbel-names .plus {
   font-family: var(--font-display);
   font-size: clamp(20px, 6vw, 28px);
-  color: var(--cream);
-  text-shadow: 2px 2px 0 var(--ink);
+  color: var(--yellow);
+  -webkit-text-stroke: 2px var(--ink);
 }
 
 /* === Uitdelen === */
@@ -753,7 +731,7 @@
   color: var(--ink);
   border: 2.5px solid var(--ink);
   border-radius: var(--r-md);
-  box-shadow: 0 3px 0 0 var(--ink);
+  box-shadow: var(--shadow-pop-sm);
 }
 .uit-row .nm {
   font-family: var(--font-display);
@@ -768,12 +746,12 @@
   width: 36px; height: 36px;
   border: 2.5px solid var(--ink);
   border-radius: 999px;
-  background: var(--lime);
+  background: var(--mint);
   color: var(--ink);
   font-family: var(--font-display);
   font-size: 20px;
   cursor: pointer;
-  box-shadow: 0 3px 0 0 var(--ink);
+  box-shadow: var(--shadow-pop-sm);
   display: grid; place-items: center;
   padding: 0;
 }
@@ -782,7 +760,7 @@
   font-family: var(--font-display);
   font-variant-numeric: tabular-nums;
   font-size: 22px;
-  color: var(--pink-deep);
+  color: var(--coral-deep);
   min-width: 28px;
   text-align: center;
 }
@@ -791,7 +769,7 @@
   font-variant-numeric: tabular-nums;
   font-size: clamp(56px, 18vw, 80px);
   text-align: center;
-  color: var(--lime);
+  color: var(--coral);
   -webkit-text-stroke: 4px var(--ink);
   text-shadow: 5px 5px 0 var(--ink);
   line-height: 1;

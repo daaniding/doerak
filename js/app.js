@@ -1,39 +1,56 @@
-/* DOERAK — main controller. Screen routing, state, game loop orchestration. */
+/* DOERAK — main controller. Pack-based session, screen routing, onboarding. */
 (function () {
 
   const APP = document.getElementById('app');
 
-  /* ---- State ---- */
+  /* === Packs (replaces duration timer) === */
+  const PACKS = [
+    { id: 'kort',      name: 'KORT',        rounds: 5,  desc: 'Snelle warm-up · ±10 min' },
+    { id: 'klassiek',  name: 'KLASSIEKER',  rounds: 10, desc: 'De doerak-pakketje · ±20 min' },
+    { id: 'marathon',  name: 'MARATHON',    rounds: 20, desc: 'Hele avond ontsporen · ±40 min' },
+    { id: 'avond',     name: 'HELE AVOND',  rounds: 0,  desc: 'Geen limiet, jij stopt' }
+  ];
+  function packById(id) { return PACKS.find(p => p.id === id) || PACKS[1]; }
+
+  /* === State === */
   const initialState = () => ({
     screen: 'welcome',
+    onboarded: !!localStorage.getItem('doerak.onboarded'),
     players: [],
     availableDrinks: [],
-    duration: null,           // 30 / 60 / 120 / 999 (hele avond)
+    pack: null,                // 'kort' / 'klassiek' / 'marathon' / 'avond'
     intensity: 'normaal',
-    voorspelling: null,       // { winner, votedBy: { name -> name } }
+    voorspelling: null,
     seating: [],
-    history: [],              // game ids played
-    activeRules: [],          // [{ id, text, color, expiresAt? }]
+    history: [],
+    activeRules: [],
     sessionStart: null,
-    sessionEnd: null,
     paused: false,
-    pauseStart: null,
-    pausedTotal: 0,
     stats: { mostLikelyPicks: {} },
     eindscherm: null
   });
 
   let state = DoerakStorage.load() || initialState();
 
-  function persist() {
-    DoerakStorage.save(state);
-  }
-  function reset() {
-    state = initialState();
-    DoerakStorage.clear();
+  function persist() { DoerakStorage.save(state); }
+  function reset() { state = initialState(); DoerakStorage.clear(); }
+
+  /* === Per-game color theme === */
+  const GAME_THEMES = {
+    tijdsbom: 'coral', reactietest: 'yellow', mostLikelyTo: 'blush',
+    mostLikelyBomb: 'coral', imposter: 'mint', paranoia: 'ink',
+    drunkocracy: 'coral', hotSeat: 'yellow', twentyone: 'blush',
+    buzz: 'yellow', categorieTimer: 'coral', waterval: 'sky',
+    blindeKeuze: 'mint', regelRoulette: 'yellow', buddy: 'coral',
+    saboteur: 'ink', sociale: 'mint', dubbelPech: 'coral',
+    uitdelen: 'mint', guess5: 'yellow'
+  };
+  function setTheme(t) {
+    if (t) document.body.setAttribute('data-theme', t);
+    else   document.body.removeAttribute('data-theme');
   }
 
-  /* ---- Screen mounting ---- */
+  /* === Mount helper === */
   function mount(builder) {
     const olds = APP.querySelectorAll('.screen');
     const next = U.el('div', { class: 'screen entering' });
@@ -41,15 +58,11 @@
     builder(next);
     olds.forEach((old, i) => {
       old.classList.remove('entering');
-      // anything older than the immediate previous gets nuked instantly to avoid stacking
-      if (i < olds.length - 1) {
-        old.remove();
-        return;
-      }
+      if (i < olds.length - 1) { old.remove(); return; }
       old.classList.add('exiting');
-      setTimeout(() => old.remove(), 300);
+      setTimeout(() => old.remove(), 280);
     });
-    setTimeout(() => next.classList.remove('entering'), 400);
+    setTimeout(() => next.classList.remove('entering'), 380);
   }
 
   function go(screen) {
@@ -61,9 +74,10 @@
   function routeRender() {
     switch (state.screen) {
       case 'welcome':       return renderWelcome();
+      case 'onboarding':    return renderOnboarding();
       case 'setup-players': return renderSetupPlayers();
       case 'setup-drinks':  return renderSetupDrinks();
-      case 'setup-duur':    return renderSetupDuur();
+      case 'setup-pack':    return renderSetupPack();
       case 'setup-intens':  return renderSetupIntens();
       case 'voorspelling':  return renderVoorspelling();
       case 'zitplaatsen':   return renderZitplaatsen();
@@ -73,23 +87,7 @@
     }
   }
 
-  /* Per-game color themes — sets body[data-theme] for vibrant per-game backgrounds. */
-  const GAME_THEMES = {
-    tijdsbom: 'red', reactietest: 'lime', mostLikelyTo: 'pink',
-    mostLikelyBomb: 'red', imposter: 'purple', paranoia: 'purple',
-    drunkocracy: 'pink', hotSeat: 'orange', twentyone: 'pink',
-    buzz: 'lime', categorieTimer: 'orange', waterval: 'cyan',
-    blindeKeuze: 'purple', regelRoulette: 'orange', buddy: 'pink',
-    saboteur: 'red', sociale: 'lime', dubbelPech: 'red',
-    uitdelen: 'purple', guess5: 'orange'
-  };
-
-  function setTheme(t) {
-    if (t) document.body.setAttribute('data-theme', t);
-    else   document.body.removeAttribute('data-theme');
-  }
-
-  /* ---- 1. WELCOME ---- */
+  /* === 1. WELCOME === */
   function renderWelcome() {
     setTheme(null);
     mount(s => {
@@ -97,17 +95,27 @@
       s.appendChild(U.el('div', { class: 'marker', text: 'NL · 18+ · ★' }));
       s.appendChild(U.el('div', { class: 'marker right', text: '20 GAMES' }));
 
-      // floating party emoji decorations
-      ['🍻','🥂','🎉','🥳'].forEach((em, i) => {
-        s.appendChild(U.el('div', { class: 'welcome-emoji e' + (i+1), text: em }));
+      // floating decorative SVGs
+      ['cup', 'sparkle', 'confetti', 'bottle'].forEach((d, i) => {
+        const div = U.el('div', { class: 'welcome-deco d' + (i+1) });
+        div.innerHTML = DOERAK_ICONS.deco[d]();
+        s.appendChild(div);
       });
 
+      // Mascot
+      const mascotWrap = U.el('div', { class: 'welcome-mascot-wrap' });
+      mascotWrap.innerHTML = DOERAK_ICONS.mascot();
+      const mascotSvg = mascotWrap.querySelector('svg');
+      mascotSvg.classList.add('welcome-mascot');
+      s.appendChild(mascotSvg);
+
+      // Title with stamped letters
       const title = U.el('h1', { class: 'welcome-title' });
       const letters = ['D', 'O', 'E', 'R', 'A', 'K'];
       letters.forEach((l, i) => {
         const span = U.el('span', { class: 'l letter-stamp', 'data-l': l });
         span.textContent = l;
-        span.style.animationDelay = (i * 0.08) + 's';
+        span.style.animationDelay = (i * 0.06) + 's';
         title.appendChild(span);
       });
       s.appendChild(title);
@@ -119,8 +127,8 @@
       const hasSession = session && session.players && session.players.length >= 3 && session.screen !== 'welcome' && session.screen !== 'eindscherm';
 
       stack.appendChild(U.el('button', {
-        class: 'btn full', text: 'NIEUW SPEL',
-        onClick: () => { AudioFX.unlock(); AudioFX.beep(); reset(); go('setup-players'); }
+        class: 'btn full primary', text: 'NIEUW SPEL',
+        onClick: () => { AudioFX.unlock(); AudioFX.beep(); reset(); go(state.onboarded ? 'setup-players' : 'onboarding'); }
       }));
       if (hasSession) {
         stack.appendChild(U.el('button', {
@@ -134,7 +142,73 @@
     });
   }
 
-  /* ---- 2. SETUP ---- */
+  /* === ONBOARDING (3 cards) === */
+  function renderOnboarding() {
+    setTheme(null);
+    let step = 0;
+    const cards = [
+      {
+        icon: 'mascot',
+        title: 'EÉN TELEFOON',
+        body: 'Eén telefoon, jullie groep eromheen. Lees voor wat er staat, doe wat het zegt, drink wat je krijgt.'
+      },
+      {
+        icon: 'pass',
+        title: 'GEEF DOOR',
+        body: 'Vaak is er één speler aan de beurt. Geef de telefoon door als de naam op het scherm verschijnt — geen spieken.'
+      },
+      {
+        icon: 'glass',
+        title: 'DRINK MET MATEN',
+        body: 'De app schaalt slokken aan jouw drank en intensiteit. 18+. Niemand drinkt zich kapot.'
+      }
+    ];
+
+    function render() {
+      mount(s => {
+        s.classList.add('onboarding');
+        const prog = U.el('div', { class: 'onboard-progress' });
+        cards.forEach((_, i) => {
+          const dot = U.el('div', { class: 'dot' + (i === step ? ' active' : i < step ? ' done' : '') });
+          prog.appendChild(dot);
+        });
+        s.appendChild(prog);
+
+        const c = cards[step];
+        const card = U.el('div', { class: 'onboard-card' });
+        const vis = U.el('div', { class: 'vis' });
+        if (c.icon === 'mascot') vis.innerHTML = DOERAK_ICONS.mascot();
+        else if (c.icon === 'pass') vis.innerHTML = DOERAK_ICONS.game.mostLikelyTo();
+        else if (c.icon === 'glass') vis.innerHTML = DOERAK_ICONS.deco.cup();
+        card.appendChild(vis);
+        card.appendChild(U.el('h2', { text: c.title }));
+        card.appendChild(U.el('div', { class: 'body', text: c.body }));
+        s.appendChild(card);
+
+        const footer = U.el('div', { class: 'setup-footer' });
+        const back = U.el('button', { class: 'btn ghost small', onClick: () => {
+          if (step > 0) { step--; render(); }
+          else go('welcome');
+        }});
+        back.innerHTML = DOERAK_ICONS.ui.arrowBack();
+        footer.appendChild(back);
+        const nextBtn = U.el('button', {
+          class: 'btn primary',
+          text: step === cards.length - 1 ? 'LATEN WE GAAN' : 'VERDER',
+          onClick: () => {
+            AudioFX.beep();
+            if (step < cards.length - 1) { step++; render(); }
+            else { localStorage.setItem('doerak.onboarded', '1'); state.onboarded = true; persist(); go('setup-players'); }
+          }
+        });
+        footer.appendChild(nextBtn);
+        s.appendChild(footer);
+      });
+    }
+    render();
+  }
+
+  /* === SETUP === */
   function setupShell(stepN, builder) {
     setTheme(null);
     mount(s => {
@@ -153,15 +227,34 @@
     });
   }
 
+  function makeBackBtn(target) {
+    const b = U.el('button', { class: 'btn ghost small', onClick: () => go(target) });
+    b.innerHTML = DOERAK_ICONS.ui.arrowBack();
+    return b;
+  }
+  function makeNextBtn(label, onClick) {
+    const b = U.el('button', { class: 'btn primary', onClick });
+    b.innerHTML = '<span>' + label + '</span>';
+    const arrow = document.createElement('span');
+    arrow.innerHTML = DOERAK_ICONS.ui.arrow();
+    arrow.querySelector('svg').style.width = '20px';
+    arrow.querySelector('svg').style.height = '20px';
+    arrow.querySelectorAll('line, path').forEach(p => p.setAttribute('stroke', 'var(--cream)'));
+    b.appendChild(arrow);
+    return b;
+  }
+
   function renderSetupPlayers() {
     setupShell(1, step => {
-      step.appendChild(U.el('div', { class: 'num', text: '01 / spelers' }));
+      step.appendChild(U.el('div', { class: 'num', text: '01 / SPELERS' }));
       step.appendChild(U.el('h2', { text: 'WIE DRINKT MEE?' }));
-      step.appendChild(U.el('p', { text: 'Min 3, max 10. Geen dubbele namen.' }));
+      step.appendChild(U.el('p', { text: 'Min 3, max 10 spelers. Geen dubbele namen.' }));
 
       const inputRow = U.el('div', { class: 'player-input' });
       const inp = U.el('input', { type: 'text', placeholder: 'Naam...', maxLength: 16 });
-      const addBtn = U.el('button', { class: 'btn small', text: '+ ADD' });
+      const addBtn = U.el('button', { class: 'btn primary' });
+      addBtn.innerHTML = DOERAK_ICONS.ui.plus();
+      addBtn.querySelectorAll('line').forEach(l => l.setAttribute('stroke', 'var(--cream)'));
       inputRow.appendChild(inp); inputRow.appendChild(addBtn);
       step.appendChild(inputRow);
 
@@ -169,8 +262,8 @@
       step.appendChild(list);
 
       const footer = U.el('div', { class: 'setup-footer' });
-      const back = U.el('button', { class: 'btn ghost small', text: '← TERUG', onClick: () => go('welcome') });
-      const nextBtn = U.el('button', { class: 'btn', text: 'VERDER →' });
+      const back = makeBackBtn('welcome');
+      const nextBtn = makeNextBtn('VERDER', () => { AudioFX.beep(); go('setup-drinks'); });
       footer.appendChild(back); footer.appendChild(nextBtn);
       step.appendChild(footer);
 
@@ -191,29 +284,26 @@
         const v = inp.value.trim();
         if (!v) return;
         if (state.players.length >= 10) return;
-        if (state.players.find(n => n.toLowerCase() === v.toLowerCase())) {
-          inp.value = ''; return;
-        }
+        if (state.players.find(n => n.toLowerCase() === v.toLowerCase())) { inp.value = ''; return; }
         state.players.push(v);
         inp.value = ''; persist(); refresh();
         AudioFX.softBeep();
       }
       addBtn.addEventListener('click', add);
       inp.addEventListener('keydown', e => { if (e.key === 'Enter') add(); });
-      nextBtn.addEventListener('click', () => { AudioFX.beep(); go('setup-drinks'); });
     });
   }
 
   function renderSetupDrinks() {
     setupShell(2, step => {
-      step.appendChild(U.el('div', { class: 'num', text: '02 / drank' }));
+      step.appendChild(U.el('div', { class: 'num', text: '02 / DRANK' }));
       step.appendChild(U.el('h2', { text: 'WAT STAAT ER OP TAFEL?' }));
       step.appendChild(U.el('p', { text: 'Kies 1 of meer — dit bepaalt alle drinkopdrachten.' }));
 
       const opts = [
-        { id: 'bier', label: 'BIER', desc: 'Pilsje, IPA, alles' },
-        { id: 'wijn', label: 'WIJN', desc: 'Rood, wit, rosé' },
-        { id: 'sterk', label: 'STERK', desc: 'Tequila, vodka, whiskey, shots' }
+        { id: 'bier', label: 'BIER', desc: 'Pilsje · IPA · alles', icon: 'bier' },
+        { id: 'wijn', label: 'WIJN', desc: 'Rood · wit · rosé', icon: 'wijn' },
+        { id: 'sterk', label: 'STERK', desc: 'Tequila · vodka · whiskey · shots', icon: 'sterk' }
       ];
       const wrap = U.el('div', { class: 'drink-options' });
       step.appendChild(wrap);
@@ -223,12 +313,16 @@
         opts.forEach(o => {
           const active = state.availableDrinks.includes(o.id);
           const card = U.el('div', { class: 'drink-option' + (active ? ' active' : '') });
-          card.appendChild(U.el('div', { class: 'icon', text: o.id === 'bier' ? '🍺' : o.id === 'wijn' ? '🍷' : '🥃' }));
+          const iconWrap = U.el('div', { class: 'icon-wrap' });
+          iconWrap.innerHTML = DOERAK_ICONS.drink[o.icon]();
+          card.appendChild(iconWrap);
           card.appendChild(U.el('div', { class: 'text' },
             U.el('div', { class: 'name', text: o.label }),
             U.el('div', { class: 'desc', text: o.desc })
           ));
-          card.appendChild(U.el('div', { class: 'check', text: '✓' }));
+          const check = U.el('div', { class: 'check' });
+          check.innerHTML = DOERAK_ICONS.ui.check();
+          card.appendChild(check);
           card.addEventListener('click', () => {
             AudioFX.softBeep();
             if (active) state.availableDrinks = state.availableDrinks.filter(x => x !== o.id);
@@ -241,8 +335,8 @@
       refresh();
 
       const footer = U.el('div', { class: 'setup-footer' });
-      const back = U.el('button', { class: 'btn ghost small', text: '← TERUG', onClick: () => go('setup-players') });
-      const nextBtn = U.el('button', { class: 'btn', text: 'VERDER →', onClick: () => { AudioFX.beep(); go('setup-duur'); } });
+      const back = makeBackBtn('setup-players');
+      const nextBtn = makeNextBtn('VERDER', () => { AudioFX.beep(); go('setup-pack'); });
       footer.appendChild(back); footer.appendChild(nextBtn);
       step.appendChild(footer);
 
@@ -251,59 +345,55 @@
     });
   }
 
-  function renderSetupDuur() {
+  function renderSetupPack() {
     setupShell(3, step => {
-      step.appendChild(U.el('div', { class: 'num', text: '03 / duur' }));
-      step.appendChild(U.el('h2', { text: 'HOE LANG?' }));
-      step.appendChild(U.el('p', { text: 'Een timer telt af. Wanneer hij op nul staat, krijg je de keuze.' }));
+      step.appendChild(U.el('div', { class: 'num', text: '03 / PAKKET' }));
+      step.appendChild(U.el('h2', { text: 'HOEVEEL RONDES?' }));
+      step.appendChild(U.el('p', { text: 'Kies een pakket. Geen rondes meer = eindscherm.' }));
 
-      const opts = [
-        { id: 30, label: '30 MIN', sub: 'KORT EN HEET' },
-        { id: 60, label: '1 UUR', sub: 'KLASSIEKER' },
-        { id: 120, label: '2 UUR', sub: 'EEN AVOND' },
-        { id: 999, label: 'HELE AVOND', sub: 'GEEN GRENZEN' }
-      ];
-      const grid = U.el('div', { class: 'option-grid' });
-      step.appendChild(grid);
+      const list = U.el('div', { class: 'pack-list' });
+      step.appendChild(list);
 
       function refresh() {
-        grid.innerHTML = '';
-        opts.forEach(o => {
-          const active = state.duration === o.id;
-          const card = U.el('div', { class: 'option-card' + (active ? ' active' : '') },
-            U.el('div', { class: 'label', text: o.label }),
-            U.el('div', { class: 'sub', text: o.sub })
-          );
+        list.innerHTML = '';
+        PACKS.forEach(p => {
+          const active = state.pack === p.id;
+          const card = U.el('div', { class: 'pack-card' + (active ? ' active' : '') });
+          card.appendChild(U.el('div', { class: 'num', text: p.rounds === 0 ? '∞' : p.rounds }));
+          card.appendChild(U.el('div', { class: 'text' },
+            U.el('div', { class: 'name', text: p.name }),
+            U.el('div', { class: 'desc', text: p.desc })
+          ));
           card.addEventListener('click', () => {
             AudioFX.softBeep();
-            state.duration = o.id; persist(); refresh(); update();
+            state.pack = p.id; persist(); refresh(); update();
           });
-          grid.appendChild(card);
+          list.appendChild(card);
         });
       }
       refresh();
 
       const footer = U.el('div', { class: 'setup-footer' });
-      const back = U.el('button', { class: 'btn ghost small', text: '← TERUG', onClick: () => go('setup-drinks') });
-      const nextBtn = U.el('button', { class: 'btn', text: 'VERDER →', onClick: () => { AudioFX.beep(); go('setup-intens'); } });
+      const back = makeBackBtn('setup-drinks');
+      const nextBtn = makeNextBtn('VERDER', () => { AudioFX.beep(); go('setup-intens'); });
       footer.appendChild(back); footer.appendChild(nextBtn);
       step.appendChild(footer);
 
-      function update() { nextBtn.disabled = !state.duration; }
+      function update() { nextBtn.disabled = !state.pack; }
       update();
     });
   }
 
   function renderSetupIntens() {
     setupShell(4, step => {
-      step.appendChild(U.el('div', { class: 'num', text: '04 / intensiteit' }));
+      step.appendChild(U.el('div', { class: 'num', text: '04 / VIBE' }));
       step.appendChild(U.el('h2', { text: 'HOE HEFTIG?' }));
-      step.appendChild(U.el('p', { text: 'Kies de vibe. Dit schaalt drank, weegt games en kleurt content.' }));
+      step.appendChild(U.el('p', { text: 'Schaalt drank en kleurt content.' }));
 
       const opts = [
-        { id: 'chill', label: 'CHILL', sub: 'GEZELLIG, RUSTIG, GEEN PRINT-OUT' },
-        { id: 'normaal', label: 'NORMAAL', sub: 'GOEIE AVOND, MORGEN GEWOON OP' },
-        { id: 'heftig', label: 'HEFTIG', sub: 'DOERAK MODUS, JE BENT GEWAARSCHUWD' }
+        { id: 'chill',   label: 'CHILL',   sub: 'Gezellig · rustig · geen pijn' },
+        { id: 'normaal', label: 'NORMAAL', sub: 'Goeie avond · morgen gewoon op' },
+        { id: 'heftig',  label: 'HEFTIG',  sub: 'Doerak modus · gewaarschuwd' }
       ];
       const grid = U.el('div', { style: { display: 'flex', flexDirection: 'column', gap: '12px' } });
       step.appendChild(grid);
@@ -324,17 +414,17 @@
       });
 
       const footer = U.el('div', { class: 'setup-footer' });
-      const back = U.el('button', { class: 'btn ghost small', text: '← TERUG', onClick: () => go('setup-duur') });
-      const nextBtn = U.el('button', { class: 'btn', text: 'VOORSPELLING →', onClick: () => { AudioFX.beep(); go('voorspelling'); } });
+      const back = makeBackBtn('setup-pack');
+      const nextBtn = makeNextBtn('VOORSPEL', () => { AudioFX.beep(); go('voorspelling'); });
       footer.appendChild(back); footer.appendChild(nextBtn);
       step.appendChild(footer);
     });
   }
 
-  /* ---- 3. VOORSPELLING (and reused for Eindscherm) ---- */
+  /* === Vote flow (shared between voorspelling + eindscherm) === */
   function renderVoteFlow({ heading, blurb, onDone, exitTo }) {
     let i = 0;
-    const votes = {}; // voter -> picked
+    const votes = {};
     const tally = {};
 
     function next() {
@@ -342,7 +432,7 @@
         s.classList.add('vote-screen');
         if (i >= state.players.length) return reveal(s);
         const voter = state.players[i];
-        s.appendChild(U.el('div', { class: 'kicker orange', text: heading }));
+        s.appendChild(U.el('div', { class: 'kicker coral', style: { alignSelf: 'center' }, text: heading }));
         s.appendChild(U.el('div', { class: 'who-turn', text: voter }));
         s.appendChild(U.el('div', { class: 'pass-instruction', text: blurb }));
         const list = U.el('div', { class: 'target-list' });
@@ -358,17 +448,16 @@
           }));
         });
         s.appendChild(list);
-        const footer = U.el('div', { style: { marginTop: '12px' } });
         if (exitTo) {
-          footer.appendChild(U.el('button', { class: 'btn small ghost', text: '← TERUG', onClick: () => go(exitTo) }));
+          const back = makeBackBtn(exitTo);
+          back.style.alignSelf = 'flex-start';
+          s.appendChild(back);
         }
-        s.appendChild(footer);
       });
     }
 
     function reveal(s) {
-      // dramatic count up then big reveal
-      s.appendChild(U.el('div', { class: 'kicker orange', text: 'STEMMEN BINNEN' }));
+      s.appendChild(U.el('div', { class: 'kicker coral', style: { alignSelf: 'center' }, text: 'STEMMEN BINNEN' }));
       const counter = U.el('div', { class: 'reveal-counter', text: '0' });
       const stage = U.el('div', { class: 'reveal-stage' });
       stage.appendChild(counter);
@@ -384,25 +473,22 @@
           clearInterval(tickInt);
           AudioFX.boom(); U.flash('fire');
           stage.innerHTML = '';
-          // determine winner
           let max = 0, winner = null;
           for (const k in tally) if (tally[k] > max) { max = tally[k]; winner = k; }
           stage.appendChild(U.el('div', { class: 'reveal-name' },
             document.createTextNode(winner),
             U.el('div', { class: 'num', text: max + ' / ' + total + ' STEMMEN' })
           ));
-          const next = U.el('button', { class: 'btn full', text: 'VERDER →',
-            onClick: () => onDone({ winner, votes, tally }) });
-          s.appendChild(next);
+          const nextBtn = makeNextBtn('VERDER', () => onDone({ winner, votes, tally }));
+          s.appendChild(nextBtn);
         }
       }, 350);
     }
-
     next();
   }
 
   function renderVoorspelling() {
-    setTheme('purple');
+    setTheme('blush');
     renderVoteFlow({
       heading: 'GEEF ANONIEM JE GOK DOOR',
       blurb: 'Wie wordt vannacht het meest dronken? Privé.',
@@ -415,22 +501,22 @@
     });
   }
 
-  /* ---- 4. ZITPLAATSEN ---- */
+  /* === ZITPLAATSEN === */
   function renderZitplaatsen() {
-    setTheme('cyan');
+    setTheme('mint');
     if (!state.seating.length || state.seating.length !== state.players.length) {
       state.seating = U.shuffle(state.players);
       persist();
     }
     mount(s => {
       s.classList.add('seating');
-      s.appendChild(U.el('div', { class: 'kicker orange', text: 'ZITVOLGORDE' }));
-      s.appendChild(U.el('h2', { text: 'JE BUREN VAN VANAVOND' }));
+      s.appendChild(U.el('div', { class: 'kicker coral', style: { alignSelf: 'center' }, text: 'ZITVOLGORDE' }));
+      s.appendChild(U.el('h2', { style: { color: 'var(--ink)', textAlign: 'center', textShadow: '4px 4px 0 var(--coral)' }, text: 'JE BUREN VAN VANAVOND' }));
       const tableWrap = U.el('div', { class: 'seating-table' });
       tableWrap.appendChild(U.el('div', { class: 'table-disc' }));
       state.seating.forEach((p, idx) => {
         const angle = (idx / state.seating.length) * 2 * Math.PI - Math.PI / 2;
-        const radius = 40;
+        const radius = 38;
         const x = 50 + radius * Math.cos(angle);
         const y = 50 + radius * Math.sin(angle);
         const seat = U.el('div', {
@@ -441,29 +527,26 @@
         tableWrap.appendChild(seat);
       });
       s.appendChild(tableWrap);
-      s.appendChild(U.el('p', { style: { textAlign: 'center', color: 'var(--ink-bone-dim)' },
+      s.appendChild(U.el('p', { style: { textAlign: 'center', color: 'var(--ink)', opacity: 0.7, fontWeight: 800 },
         text: 'Onthoud dit — sommige games gebruiken je buren.' }));
 
       const footer = U.el('div', { class: 'setup-footer' });
-      footer.appendChild(U.el('button', { class: 'btn ghost small', text: '← OPNIEUW LOTEN',
+      footer.appendChild(U.el('button', { class: 'btn ghost small', text: 'OPNIEUW LOTEN',
         onClick: () => { state.seating = U.shuffle(state.players); persist(); routeRender(); } }));
-      footer.appendChild(U.el('button', { class: 'btn', text: 'START GAME →',
-        onClick: () => {
-          state.sessionStart = Date.now();
-          state.sessionEnd = state.sessionStart + (state.duration * 60 * 1000);
-          state.history = [];
-          state.activeRules = [];
-          state.stats = { mostLikelyPicks: {} };
-          persist();
-          AudioFX.boom();
-          go('gameloop');
-        } }));
+      footer.appendChild(makeNextBtn('START', () => {
+        state.sessionStart = Date.now();
+        state.history = [];
+        state.activeRules = [];
+        state.stats = { mostLikelyPicks: {} };
+        persist();
+        AudioFX.boom();
+        go('gameloop');
+      }));
       s.appendChild(footer);
     });
   }
 
-  /* ---- 5. GAME LOOP ---- */
-  let loopTimer = null;
+  /* === GAME LOOP === */
   let activeGameCleanup = null;
 
   function renderGameloop() {
@@ -471,24 +554,18 @@
     mount(s => {
       s.classList.add('gameloop');
 
-      // Topbar
       const tb = U.el('div', { class: 'topbar' });
       const left = U.el('div', { class: 'row' },
-        U.el('span', { class: 'pill lime', text: 'RONDE ' + (state.history.length + 1) }),
+        U.el('span', { class: 'pill yellow', text: roundLabel() }),
       );
       const right = U.el('div', { class: 'row' });
-      const timeEl = U.el('span', { class: 'pill pink', text: '--:--' });
-      const pauseBtn = U.el('button', {
-        class: 'pause-btn',
-        'aria-label': 'Pauze menu',
-        onClick: () => showPauseMenu()
-      });
-      pauseBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"><line x1="8" y1="5" x2="8" y2="19"/><line x1="16" y1="5" x2="16" y2="19"/></svg>';
-      right.appendChild(timeEl); right.appendChild(pauseBtn);
+      const pauseBtn = U.el('button', { class: 'pause-btn', 'aria-label': 'Pauze' });
+      pauseBtn.innerHTML = DOERAK_ICONS.ui.pause();
+      pauseBtn.addEventListener('click', () => showPauseMenu());
+      right.appendChild(pauseBtn);
       tb.appendChild(left); tb.appendChild(right);
       s.appendChild(tb);
 
-      // Rules ribbon
       const ribbon = U.el('div', { class: 'rules-ribbon', id: 'rules-ribbon' });
       s.appendChild(ribbon);
       renderRules(ribbon);
@@ -496,34 +573,15 @@
       const stage = U.el('div', { class: 'stage' });
       s.appendChild(stage);
 
-      // Hook for games to add rules
-      const apiCtx = makeGameCtx(stage);
-
-      // Update timer
-      const updateTime = () => {
-        if (state.paused) {
-          timeEl.textContent = 'PAUZE';
-          return;
-        }
-        const remainMs = state.sessionEnd - Date.now();
-        if (remainMs <= 0) {
-          if (!state._timeUpShown) {
-            state._timeUpShown = true;
-            persist();
-            showTimeUp(s);
-          }
-          timeEl.textContent = '0:00';
-          return;
-        }
-        timeEl.textContent = U.fmtTime(remainMs / 1000);
-      };
-      if (loopTimer) clearInterval(loopTimer);
-      loopTimer = setInterval(updateTime, 1000);
-      updateTime();
-
-      // Start with slot machine into a game
-      pickAndPlay(stage, apiCtx);
+      pickAndPlay(stage, makeGameCtx(stage));
     });
+  }
+
+  function roundLabel() {
+    const pack = packById(state.pack);
+    const r = state.history.length;
+    if (pack.rounds === 0) return 'RONDE ' + (r + 1);
+    return 'RONDE ' + Math.min(r + 1, pack.rounds) + ' / ' + pack.rounds;
   }
 
   function renderRules(ribbonEl) {
@@ -536,7 +594,7 @@
     }
     ribbonEl.style.display = 'flex';
     state.activeRules.forEach(r => {
-      ribbonEl.appendChild(U.el('span', { class: 'rule-chip' + (r.color === 'orange' ? ' orange' : ''), text: r.text }));
+      ribbonEl.appendChild(U.el('span', { class: 'rule-chip' + (r.color === 'orange' || r.color === 'coral' ? ' coral' : ' yellow'), text: r.text }));
     });
   }
 
@@ -546,7 +604,7 @@
       availableDrinks: state.availableDrinks,
       intensity: state.intensity,
       history: state.history,
-      addRule(text, color = 'cyan', expiresInRounds = -1) {
+      addRule(text, color = 'yellow', expiresInRounds = -1) {
         const rule = { text, color, addedAtRound: state.history.length, expiresInRounds };
         state.activeRules.push(rule);
         persist();
@@ -559,12 +617,17 @@
         persist();
       },
       next: () => {
-        // expire rules whose round count ran out
         state.activeRules = state.activeRules.filter(r => {
           if (r.expiresInRounds < 0) return true;
           return (state.history.length + 1 - r.addedAtRound) < r.expiresInRounds;
         });
         renderRules();
+        // Pack end check
+        const pack = packById(state.pack);
+        if (pack.rounds > 0 && state.history.length >= pack.rounds) {
+          go('eindscherm');
+          return;
+        }
         pickAndPlay(stage, makeGameCtx(stage));
       },
       cleanup: null
@@ -576,18 +639,15 @@
     const game = DoerakGames.pickNext(state.history, state.intensity);
     state.history.push(game.id);
     persist();
-    setTheme(GAME_THEMES[game.id] || 'pink');
-    // refresh ronde counter
-    const pill = document.querySelector('.topbar .pill.lime');
-    if (pill) pill.textContent = 'RONDE ' + state.history.length;
+    setTheme(GAME_THEMES[game.id] || 'coral');
+    const pill = document.querySelector('.topbar .pill.yellow');
+    if (pill) pill.textContent = roundLabel();
 
-    // run slot machine using game name as final, with other game names as filler
     const candidates = DoerakGames.list().map(g => g.name);
     DoerakSlot(stage, candidates, game.name, () => {
       stage.innerHTML = '';
       const view = U.el('div', { class: 'game-view' });
       stage.appendChild(view);
-      // intro card first
       showIntro(view, game, () => {
         view.innerHTML = '';
         apiCtx.cleanup = null;
@@ -596,56 +656,24 @@
           activeGameCleanup = () => apiCtx.cleanup && apiCtx.cleanup();
         } catch (e) {
           console.error('game error', e);
-          view.appendChild(U.el('div', { class: 'card', text: 'Oeps — game crashte. Volgende.' }));
-          view.appendChild(U.el('button', { class: 'btn full', text: 'VOLGENDE', onClick: () => apiCtx.next() }));
+          view.appendChild(U.el('div', { class: 'card', text: 'Game crashte. Volgende ronde.' }));
+          view.appendChild(U.el('button', { class: 'btn full primary', text: 'VOLGENDE', onClick: () => apiCtx.next() }));
         }
       });
     });
   }
 
-  const GAME_EMOJI = {
-    tijdsbom: '💣', reactietest: '⚡', mostLikelyTo: '👉', mostLikelyBomb: '👉💣',
-    imposter: '🕵️', paranoia: '🤫', drunkocracy: '🗳️', hotSeat: '🔥',
-    twentyone: '🔢', buzz: '🐝', categorieTimer: '⏳', waterval: '🌊',
-    blindeKeuze: '🚪', regelRoulette: '🎡', buddy: '👯', saboteur: '😈',
-    sociale: '🍻', dubbelPech: '✌️', uitdelen: '🎁', guess5: '🎯'
-  };
-
   function showIntro(view, game, onStart) {
     view.innerHTML = '';
     const wrap = U.el('div', { class: 'game-intro' });
+    const heroIcon = U.el('div', { class: 'game-icon-hero' });
+    if (DOERAK_ICONS.game[game.id]) heroIcon.innerHTML = DOERAK_ICONS.game[game.id]();
+    wrap.appendChild(heroIcon);
     wrap.appendChild(U.el('div', { class: 'badge', text: 'NU SPELEN' }));
-    const emoji = GAME_EMOJI[game.id];
-    const heroEmoji = emoji ? U.el('div', { class: 'gname-emoji', text: emoji }) : null;
-    if (heroEmoji) wrap.appendChild(heroEmoji);
     wrap.appendChild(U.el('div', { class: 'gname', text: game.name }));
     wrap.appendChild(U.el('div', { class: 'gdesc', text: game.desc }));
     wrap.appendChild(U.el('button', { class: 'btn full primary', text: 'START', onClick: () => { AudioFX.beep(); onStart(); } }));
     view.appendChild(wrap);
-  }
-
-  function showTimeUp(screen) {
-    if (screen.querySelector('.timeup-prompt')) return;
-    const overlay = U.el('div', { class: 'timeup-prompt' });
-    const card = U.el('div', { class: 'card orange' });
-    card.appendChild(U.el('h2', { text: 'TIJD IS OM' }));
-    card.appendChild(U.el('p', { style: { color: 'var(--ink-bone-dim)' }, text: 'Laatste ronde, of doorgaan?' }));
-    const stack = U.el('div', { class: 'stack tight', style: { marginTop: '16px' } });
-    stack.appendChild(U.el('button', {
-      class: 'btn full', text: 'NEE — EINDSCHERM',
-      onClick: () => { overlay.remove(); go('eindscherm'); }
-    }));
-    stack.appendChild(U.el('button', {
-      class: 'btn full cyan', text: '+10 MIN',
-      onClick: () => { state.sessionEnd += 10 * 60 * 1000; state._timeUpShown = false; persist(); overlay.remove(); }
-    }));
-    stack.appendChild(U.el('button', {
-      class: 'btn full ghost', text: 'NOG ÉÉN RONDE',
-      onClick: () => { state.sessionEnd = Date.now() + 5 * 60 * 1000; state._timeUpShown = false; persist(); overlay.remove(); }
-    }));
-    card.appendChild(stack);
-    overlay.appendChild(card);
-    screen.appendChild(overlay);
   }
 
   function showPauseMenu() {
@@ -655,74 +683,77 @@
     const card = U.el('div', { class: 'card' });
     card.appendChild(U.el('h2', { text: 'PAUZE' }));
     const stack = U.el('div', { class: 'stack tight', style: { marginTop: '16px' } });
-    stack.appendChild(U.el('button', { class: 'btn full', text: 'DOORGAAN', onClick: () => overlay.remove() }));
-    stack.appendChild(U.el('button', { class: 'btn full cyan', text: 'STOP & EINDSCHERM',
+    stack.appendChild(U.el('button', { class: 'btn full primary', text: 'DOORGAAN', onClick: () => overlay.remove() }));
+    stack.appendChild(U.el('button', { class: 'btn full mint', text: 'STOP & EINDSCHERM',
       onClick: () => { overlay.remove(); go('eindscherm'); } }));
-    stack.appendChild(U.el('button', { class: 'btn full ghost', text: 'NIEUW SPEL (ALLES WEG)',
+    stack.appendChild(U.el('button', { class: 'btn full ghost', text: 'NIEUW SPEL',
       onClick: () => { reset(); go('welcome'); } }));
     card.appendChild(stack);
     overlay.appendChild(card);
     screen.appendChild(overlay);
   }
 
-  /* ---- 6. EINDSCHERM ---- */
+  /* === EINDSCHERM === */
   function renderEindscherm() {
-    if (loopTimer) { clearInterval(loopTimer); loopTimer = null; }
     if (activeGameCleanup) { try { activeGameCleanup(); } catch (e) {} activeGameCleanup = null; }
-    setTheme('lime');
+    setTheme('yellow');
 
     renderVoteFlow({
       heading: 'WIE WERD HET MEEST DRONKEN?',
-      blurb: 'Eerlijk en anoniem. Geef door.',
+      blurb: 'Eerlijk en anoniem.',
       onDone: ({ winner, votes, tally }) => {
         state.eindscherm = { winner, votes, tally };
         persist();
-        renderEindStats();
+        renderEindCard();
       }
     });
   }
 
-  function renderEindStats() {
+  function renderEindCard() {
+    setTheme('yellow');
     mount(s => {
       s.classList.add('endscreen');
       const winner = state.eindscherm.winner;
       const predicted = state.voorspelling?.winner;
       const correct = winner === predicted;
 
-      s.appendChild(U.el('div', { class: 'kicker orange', text: 'EINDOORDEEL' }));
-      s.appendChild(U.el('h1', { class: 'reveal-name', text: winner }));
-      s.appendChild(U.el('div', { class: 'gh-tag center', text: correct ? 'EXACT VOORSPELD' : 'NIEMAND HAD HET DOOR' }));
+      const card = U.el('div', { class: 'end-card' });
+      // Winner section
+      const trophyDiv = U.el('div', { style: { width: '64px', height: '64px', flexShrink: 0 } });
+      trophyDiv.innerHTML = DOERAK_ICONS.ui.trophy();
+      const winnerRow = U.el('div', { class: 'winner-row' });
+      winnerRow.appendChild(trophyDiv);
+      card.appendChild(winnerRow);
+      card.appendChild(U.el('div', { class: 'kicker yellow', style: { alignSelf: 'center' }, text: 'MEEST DRONKEN' }));
+      card.appendChild(U.el('div', { class: 'winner-name', text: winner }));
 
-      // Compare to prediction
-      const compare = U.el('div', { class: 'card', style: { marginTop: '20px' } });
+      // Prediction outcome
       if (correct) {
-        compare.appendChild(U.el('div', { class: 'sociale-reason', html: `Jullie hadden het door! Niemand drinkt extra.` }));
+        card.appendChild(U.el('div', { class: 'body-card', html: '<strong>Voorspeld!</strong> Niemand drinkt extra.' }));
       } else {
         const drink = U.buildDrinkInstruction(5, state.availableDrinks, state.intensity);
-        // find who voted predicted
         const wrongVoters = Object.entries(state.voorspelling?.votes || {})
           .filter(([_, v]) => v === predicted).map(([k]) => k);
-        compare.appendChild(U.el('div', { class: 'sociale-reason',
-          html: `<strong>${predicted || '?'}</strong> werd het niet. ${wrongVoters.length ? wrongVoters.join(', ') + ' ' + drink : ''}` }));
+        card.appendChild(U.el('div', { class: 'body-card',
+          html: `Voorspeld: <strong>${predicted || '?'}</strong>. Mis. ${wrongVoters.length ? wrongVoters.join(', ') + ' ' + drink + '.' : ''}` }));
       }
-      s.appendChild(compare);
 
       // Stats
-      const stats = U.el('div', { class: 'card', style: { marginTop: '20px' } });
-      stats.appendChild(U.el('h3', { text: 'CIJFERS' }));
-      stats.appendChild(buildStatRow('RONDES GESPEELD', state.history.length));
+      card.appendChild(buildStatRow('RONDES', state.history.length));
       const longest = state.history.reduce((a, b) => a + (DoerakGames.byId(b)?.long ? 1 : 0), 0);
-      stats.appendChild(buildStatRow('LONG-FORMAT GAMES', longest));
-      // Most likely champ
+      card.appendChild(buildStatRow('LONG GAMES', longest));
       const mlt = state.stats?.mostLikelyPicks || {};
       const mltSorted = Object.entries(mlt).sort((a, b) => b[1] - a[1]);
       if (mltSorted.length) {
-        stats.appendChild(buildStatRow('MOST LIKELY KING', `${mltSorted[0][0]} (${mltSorted[0][1]}x)`));
+        card.appendChild(buildStatRow('MOST LIKELY KING', `${mltSorted[0][0]} (${mltSorted[0][1]}×)`));
       }
-      stats.appendChild(buildStatRow('REGELS ACTIEF', state.activeRules.length));
-      s.appendChild(stats);
+      card.appendChild(buildStatRow('REGELS ACTIEF', state.activeRules.length));
+      card.appendChild(U.el('div', { class: 'kicker cream', style: { alignSelf: 'center', marginTop: '8px' }, text: 'DOERAK · ' + (new Date()).toLocaleDateString('nl-NL') }));
 
-      const footer = U.el('div', { class: 'setup-footer', style: { marginTop: '20px' } });
+      s.appendChild(card);
+      s.appendChild(U.el('div', { class: 'share-hint', text: '📸 Maak een screenshot — deel naar de groepschat' }));
+
+      const footer = U.el('div', { class: 'setup-footer', style: { marginTop: 'auto' } });
       footer.appendChild(U.el('button', {
         class: 'btn ghost small', text: 'NIEUWE RONDE',
         onClick: () => {
@@ -731,15 +762,13 @@
           state.eindscherm = null;
           state.voorspelling = null;
           state.sessionStart = Date.now();
-          state.sessionEnd = state.sessionStart + (state.duration * 60 * 1000);
-          state._timeUpShown = false;
           state.stats = { mostLikelyPicks: {} };
           persist();
           go('voorspelling');
         }
       }));
       footer.appendChild(U.el('button', {
-        class: 'btn', text: 'NIEUW SPEL',
+        class: 'btn primary', text: 'NIEUW SPEL',
         onClick: () => { reset(); go('welcome'); }
       }));
       s.appendChild(footer);
@@ -755,9 +784,9 @@
     return r;
   }
 
-  /* ---- BOOT ---- */
+  /* === BOOT === */
   function boot() {
-    if (state.screen === 'gameloop' && (!state.players.length || !state.availableDrinks.length)) {
+    if (state.screen === 'gameloop' && (!state.players.length || !state.availableDrinks.length || !state.pack)) {
       reset();
       state.screen = 'welcome';
     }
