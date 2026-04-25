@@ -4,7 +4,39 @@
  * All viewBox 0 0 64 64 unless noted; scale via container width/height. */
 (function (global) {
 
-  /* ---- Mascot: DOERAK the cheeky cat ----
+  /* ---- Mascot variants for different game moments ---- */
+  const mascotDrunk = () => `<svg class="icon mascot" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <ellipse cx="60" cy="68" rx="42" ry="38" fill="var(--ink)"/>
+    <path d="M22 38 L18 14 L42 30 Z" fill="var(--ink)"/>
+    <path d="M98 38 L102 18 L78 30 Z" fill="var(--ink)"/>
+    <path d="M28 30 L24 18 L36 28 Z" fill="var(--purple)"/>
+    <path d="M92 30 L96 20 L84 28 Z" fill="var(--purple)"/>
+    <ellipse cx="34" cy="80" rx="9" ry="5" fill="var(--coral)" opacity="0.7"/>
+    <ellipse cx="86" cy="80" rx="9" ry="5" fill="var(--coral)" opacity="0.7"/>
+    <path d="M42 62 Q46 58 50 62 Q46 66 42 62" stroke="var(--cream)" stroke-width="2.5" fill="none"/>
+    <path d="M70 62 Q74 58 78 62 Q74 66 70 62" stroke="var(--cream)" stroke-width="2.5" fill="none"/>
+    <path d="M56 74 L64 74 L60 80 Z" fill="var(--coral)" stroke="var(--ink)" stroke-width="1.5"/>
+    <path d="M48 86 Q56 92 60 86 Q64 92 72 86" stroke="var(--cream)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <ellipse cx="60" cy="92" rx="4" ry="3" fill="var(--coral)"/>
+  </svg>`;
+
+  const mascotSurprised = () => `<svg class="icon mascot" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <ellipse cx="60" cy="68" rx="42" ry="38" fill="var(--ink)"/>
+    <path d="M22 38 L14 6 L42 28 Z" fill="var(--ink)"/>
+    <path d="M98 38 L106 6 L78 28 Z" fill="var(--ink)"/>
+    <path d="M26 28 L22 14 L36 26 Z" fill="var(--coral)"/>
+    <path d="M94 28 L98 14 L84 26 Z" fill="var(--coral)"/>
+    <ellipse cx="34" cy="78" rx="8" ry="5" fill="var(--coral)" opacity="0.55"/>
+    <ellipse cx="86" cy="78" rx="8" ry="5" fill="var(--coral)" opacity="0.55"/>
+    <circle cx="46" cy="60" r="11" fill="var(--cream)"/>
+    <circle cx="48" cy="61" r="5" fill="var(--ink)"/>
+    <circle cx="74" cy="60" r="11" fill="var(--cream)"/>
+    <circle cx="76" cy="61" r="5" fill="var(--ink)"/>
+    <path d="M56 76 L64 76 L60 82 Z" fill="var(--coral)" stroke="var(--ink)" stroke-width="1.5"/>
+    <ellipse cx="60" cy="90" rx="5" ry="6" fill="var(--ink-soft)" stroke="var(--cream)" stroke-width="2.5"/>
+  </svg>`;
+
+  /* ---- Mascot: DOERAK the cheeky cat (default expression) ----
    * - round head, two triangle ears (one slightly drooped)
    * - one eye open wide, one squinted (drunk wobble)
    * - nose, small smirk + tongue out
@@ -366,5 +398,5 @@
     `)
   };
 
-  global.DOERAK_ICONS = { mascot, game, drink, ui, deco };
+  global.DOERAK_ICONS = { mascot, mascotDrunk, mascotSurprised, game, drink, ui, deco };
 })(window);

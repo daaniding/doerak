@@ -6,12 +6,16 @@
  */
 
 :root {
-  /* === Sunset-pop palette === */
+  /* === Purple-pop palette (BoomIt-vibe) === */
   --cream:        #FFF4E5;
   --cream-deep:   #FFE9CC;
   --cream-shade:  #FAD9A8;
 
-  --coral:        #FF4D5E;
+  --purple:       #7B2CFF;       /* PRIMARY — vibrant violet */
+  --purple-deep:  #4A0EC2;
+  --purple-soft:  #C9ADFF;
+
+  --coral:        #FF4D5E;       /* secondary accent */
   --coral-deep:   #C2293A;
   --coral-soft:   #FFB5BD;
 
@@ -23,9 +27,9 @@
 
   --sky:          #5B9BFF;
 
-  --ink:          #1A1635;       /* deep purple-black */
-  --ink-soft:     #2D2659;
-  --ink-mute:     #5A4F73;       /* secondary text */
+  --ink:          #150022;       /* deep purple-black */
+  --ink-soft:     #2D0044;
+  --ink-mute:     #5A3F73;
 
   /* === Functional aliases === */
   --bg: var(--cream);
@@ -39,8 +43,6 @@
   --pink: var(--coral);
   --pink-deep: var(--coral-deep);
   --pink-soft: var(--coral-soft);
-  --purple: var(--ink-soft);
-  --purple-deep: var(--ink);
   --lime: var(--yellow);
   --lime-deep: #C9A005;
   --orange: var(--coral);
@@ -53,9 +55,9 @@
   --ink-bone: var(--cream);
   --ink-paper: var(--ink);
 
-  /* Hero color (per-game) */
-  --hero: var(--coral);
-  --hero-deep: var(--coral-deep);
+  /* Hero color (per-game) — PURPLE PRIMARY */
+  --hero: var(--purple);
+  --hero-deep: var(--purple-deep);
 
   /* Type */
   --font-display: "Bowlby One", "Anton", sans-serif;
@@ -99,25 +101,26 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* === Animated cream background with confetti dots === */
+/* === Animated background — soft purple gradient with cream + accent radials === */
 body {
   position: relative;
   background:
-    radial-gradient(ellipse 60% 40% at 18% 10%, rgba(255,203,5,0.28), transparent 60%),
-    radial-gradient(ellipse 70% 50% at 88% 8%, rgba(255,77,94,0.22), transparent 60%),
-    radial-gradient(ellipse 80% 60% at 95% 92%, rgba(32,214,160,0.20), transparent 60%),
-    radial-gradient(ellipse 70% 50% at 5% 95%, rgba(91,155,255,0.16), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 18% 10%, rgba(255,203,5,0.30), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 88% 8%, rgba(123,44,255,0.28), transparent 60%),
+    radial-gradient(ellipse 80% 60% at 95% 92%, rgba(32,214,160,0.18), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 5% 95%, rgba(255,77,94,0.18), transparent 60%),
     var(--cream);
   background-attachment: fixed;
 }
 
 /* Per-screen theme: tints the bg accents subtly without going dark */
+body[data-theme="purple"] { --hero: var(--purple); --hero-deep: var(--purple-deep); }
 body[data-theme="coral"]  { --hero: var(--coral); --hero-deep: var(--coral-deep); }
 body[data-theme="yellow"] { --hero: var(--yellow); --hero-deep: #C9A005; }
 body[data-theme="mint"]   { --hero: var(--mint); --hero-deep: var(--mint-deep); }
 body[data-theme="sky"]    { --hero: var(--sky); --hero-deep: #2868D9; }
 body[data-theme="ink"]    { --hero: var(--ink-soft); --hero-deep: var(--ink); }
-body[data-theme="blush"]  { --hero: var(--coral-soft); --hero-deep: var(--coral); }
+body[data-theme="blush"]  { --hero: var(--purple-soft); --hero-deep: var(--purple); }
 
 /* Dot confetti overlay */
 .grain {
@@ -247,7 +250,7 @@ p { margin: 0; }
   gap: var(--s-2);
   min-height: 60px;
   padding: var(--s-3) var(--s-5);
-  background: var(--coral);
+  background: var(--purple);
   color: var(--cream);
   border: 3px solid var(--ink);
   border-radius: var(--r-pill);
@@ -269,7 +272,8 @@ p { margin: 0; }
 .btn.full   { width: 100%; }
 .btn.small  { min-height: 44px; padding: var(--s-2) var(--s-4); font-size: 15px; }
 
-.btn.primary { background: var(--coral); color: var(--cream); }
+.btn.primary { background: var(--purple); color: var(--cream); }
+.btn.coral   { background: var(--coral); color: var(--cream); }
 .btn.cream   { background: var(--cream); color: var(--ink); }
 .btn.yellow  { background: var(--yellow); color: var(--ink); }
 .btn.mint    { background: var(--mint); color: var(--ink); }

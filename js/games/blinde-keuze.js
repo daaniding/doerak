@@ -19,7 +19,7 @@
 
       const root = U.el('div', { class: 'game' });
       root.appendChild(U.el('div', { class: 'game-header' },
-        U.el('div', { class: 'gh-name', text: 'BLINDE KEUZE' }),
+        U.el('div', { class: 'gh-name', text: 'DRIE DEUREN' }),
         U.el('div', { class: 'gh-tag', text: 'KIES EEN DEUR' })
       ));
       const body = U.el('div', { class: 'game-body' });

@@ -26,7 +26,7 @@
 
       const root = U.el('div', { class: 'game' });
       root.appendChild(U.el('div', { class: 'game-header' },
-        U.el('div', { class: 'gh-name', text: 'CATEGORIE TIMER' }),
+        U.el('div', { class: 'gh-name', text: 'BENOEM HET' }),
         U.el('div', { class: 'gh-tag', text: '8 SECONDEN' })
       ));
       const body = U.el('div', { class: 'game-body' });
@@ -83,7 +83,7 @@
         body.appendChild(U.el('div', { class: 'sociale-reason', html: `<strong>${p}</strong>, ${drinkFail}` }));
         if (rounds >= 3) {
           const drinkWin = U.buildDrinkInstruction(3, availableDrinks, intensity);
-          body.appendChild(U.el('div', { class: 'gh-tag', style: { color: 'var(--ink-cyan)' }, text: `OOK: ANDEREN OVERLEEFDEN 3 RONDES — ELK MAG IEMAND ${drinkWin.toUpperCase()} GEVEN` }));
+          body.appendChild(U.el('div', { class: 'body-card', style: { fontSize: '13px' }, text: `Anderen overleefden 3 rondes — elk mag iemand ${drinkWin} geven.` }));
         }
         footer.appendChild(U.el('button', { class: 'btn full', text: 'VOLGENDE RONDE', onClick: () => ctx.next() }));
       }

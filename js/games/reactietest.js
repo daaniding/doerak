@@ -25,7 +25,7 @@
 
       const root = U.el('div', { class: 'game' });
       const header = U.el('div', { class: 'game-header' },
-        U.el('div', { class: 'gh-name', text: 'REACTIETEST' }),
+        U.el('div', { class: 'gh-name', text: 'GROEN LICHT' }),
         U.el('div', { class: 'gh-tag', text: 'TAP OP GROEN' })
       );
       const body = U.el('div', { class: 'game-body' });

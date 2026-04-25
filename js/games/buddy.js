@@ -19,7 +19,7 @@
 
       const root = U.el('div', { class: 'game' });
       root.appendChild(U.el('div', { class: 'game-header' },
-        U.el('div', { class: 'gh-name', text: 'BUDDY SYSTEM' }),
+        U.el('div', { class: 'gh-name', text: 'SAMEN UIT' }),
         U.el('div', { class: 'gh-tag', text: 'LOTING' })
       ));
       const body = U.el('div', { class: 'game-body center' });

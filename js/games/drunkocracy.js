@@ -27,7 +27,7 @@
       const body = U.el('div', { class: 'game-body' });
       const footer = U.el('div', { class: 'game-footer' });
       root.appendChild(U.el('div', { class: 'game-header' },
-        U.el('div', { class: 'gh-name', text: 'DRUNK-OCRACY' }),
+        U.el('div', { class: 'gh-name', text: 'STEMHOK' }),
         U.el('div', { class: 'gh-tag', text: 'STEMRECHT' })
       ));
       root.appendChild(body); root.appendChild(footer);
@@ -41,9 +41,10 @@
         body.appendChild(U.el('div', { class: 'kicker', text: 'GEHEIM STEMMEN — GEEF DOOR AAN' }));
         body.appendChild(U.el('div', { class: 'pass-name', text: voter }));
         footer.appendChild(U.el('button', {
-          class: 'btn full', text: 'IK BEN ' + voter,
+          class: 'btn full primary', text: 'IK BEN ' + voter,
           onClick: () => doVote(voter)
         }));
+        U.turnPopup(voter, 'STEMT NU');
       }
 
       function doVote(voter) {

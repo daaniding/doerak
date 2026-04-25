@@ -21,7 +21,7 @@
 
       const root = U.el('div', { class: 'game' });
       const header = U.el('div', { class: 'game-header' },
-        U.el('div', { class: 'gh-name', text: 'IMPOSTER' }),
+        U.el('div', { class: 'gh-name', text: 'DE MOL' }),
         U.el('div', { class: 'gh-tag', text: 'GEHEIM WOORD' })
       );
       const body = U.el('div', { class: 'game-body' });
@@ -39,9 +39,10 @@
           U.el('div', { class: 'pass-name', text: p })
         ));
         footer.appendChild(U.el('button', {
-          class: 'btn full', text: 'TOON MIJN WOORD',
+          class: 'btn full primary', text: 'TOON MIJN WOORD',
           onClick: () => { AudioFX.beep(); showWord(p); }
         }));
+        U.turnPopup(p, 'KIJK NU');
       }
 
       function showWord(p) {
@@ -51,7 +52,7 @@
         const card = U.el('div', { class: 'imposter-card' + (isImp ? ' imp' : '') });
         card.appendChild(U.el('div', { class: 'kicker', text: isImp ? 'JIJ BENT...' : 'JOUW WOORD' }));
         card.appendChild(U.el('div', { class: 'word', text: word }));
-        if (isImp) card.appendChild(U.el('div', { class: 'gh-tag', style: { color: 'var(--ink-bone)' }, text: 'BLUFF JE WAY THROUGH' }));
+        if (isImp) card.appendChild(U.el('div', { class: 'gh-tag', style: { background: 'var(--ink)', color: 'var(--yellow)' }, text: 'BLUFF JE WAY THROUGH' }));
         body.appendChild(card);
         footer.innerHTML = '';
         footer.appendChild(U.el('button', {

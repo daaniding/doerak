@@ -103,9 +103,9 @@
         s.appendChild(div);
       });
 
-      // Mascot
+      // Mascot — surprised pose for welcome (extra energy)
       const mascotWrap = U.el('div', { class: 'welcome-mascot-wrap' });
-      mascotWrap.innerHTML = DOERAK_ICONS.mascot();
+      mascotWrap.innerHTML = DOERAK_ICONS.mascotSurprised();
       const mascotSvg = mascotWrap.querySelector('svg');
       mascotSvg.classList.add('welcome-mascot');
       s.appendChild(mascotSvg);
@@ -774,11 +774,13 @@
       const correct = winner === predicted;
 
       const card = U.el('div', { class: 'end-card' });
-      // Winner section
-      const trophyDiv = U.el('div', { style: { width: '64px', height: '64px', flexShrink: 0 } });
-      trophyDiv.innerHTML = DOERAK_ICONS.ui.trophy();
+      // Winner section — drunk mascot vignette
+      const heroDiv = U.el('div', { class: 'end-hero' });
+      heroDiv.innerHTML = DOERAK_ICONS.mascotDrunk();
+      heroDiv.querySelector('svg').setAttribute('width', '96');
+      heroDiv.querySelector('svg').setAttribute('height', '96');
       const winnerRow = U.el('div', { class: 'winner-row' });
-      winnerRow.appendChild(trophyDiv);
+      winnerRow.appendChild(heroDiv);
       card.appendChild(winnerRow);
       card.appendChild(U.el('div', { class: 'kicker yellow', style: { alignSelf: 'center' }, text: 'MEEST DRONKEN' }));
       card.appendChild(U.el('div', { class: 'winner-name', text: winner }));

@@ -22,8 +22,8 @@
       container.innerHTML = '';
       const root = U.el('div', { class: 'game' });
       root.appendChild(U.el('div', { class: 'game-header' },
-        U.el('div', { class: 'gh-name', text: 'TIJDSBOM' }),
-        U.el('div', { class: 'gh-tag', text: 'PASS THE BOMB' })
+        U.el('div', { class: 'gh-name', text: 'HETE AARDAPPEL' }),
+        U.el('div', { class: 'gh-tag', text: 'GEEF SNEL DOOR' })
       ));
       const body = U.el('div', { class: 'game-body center' });
       const bombWrap = U.el('div', { class: 'bomb' },

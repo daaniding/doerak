@@ -341,7 +341,7 @@
 .hotseat-spotlight .target {
   font-family: var(--font-display);
   font-size: clamp(36px, 11vw, 64px);
-  color: var(--coral);
+  color: var(--purple);
   -webkit-text-stroke: 3px var(--ink);
   text-shadow: 5px 5px 0 var(--ink);
   animation: pulse 1.4s infinite;
@@ -390,7 +390,7 @@
   font-family: var(--font-display);
   font-variant-numeric: tabular-nums;
   font-size: clamp(80px, 26vw, 140px);
-  color: var(--coral);
+  color: var(--purple);
   -webkit-text-stroke: 5px var(--ink);
   text-shadow: 7px 7px 0 var(--ink);
   line-height: 0.92;
@@ -435,7 +435,7 @@
   font-family: var(--font-display);
   font-size: clamp(32px, 9vw, 48px);
   line-height: 1.05;
-  color: var(--coral);
+  color: var(--purple);
   -webkit-text-stroke: 3px var(--ink);
   text-shadow: 4px 4px 0 var(--ink);
   word-break: break-word;
@@ -671,7 +671,7 @@
   font-family: var(--font-display);
   font-size: clamp(56px, 16vw, 110px);
   line-height: 0.9;
-  color: var(--coral);
+  color: var(--purple);
   -webkit-text-stroke: 5px var(--ink);
   text-shadow: 6px 6px 0 var(--ink);
   animation: revealPop 600ms var(--ease-pop);
@@ -705,7 +705,7 @@
   font-family: var(--font-display);
   font-size: clamp(32px, 9.5vw, 56px);
   letter-spacing: 0;
-  color: var(--coral);
+  color: var(--purple);
   -webkit-text-stroke: 3px var(--ink);
   text-shadow: 4px 4px 0 var(--ink);
   line-height: 1;
@@ -769,7 +769,7 @@
   font-variant-numeric: tabular-nums;
   font-size: clamp(56px, 18vw, 80px);
   text-align: center;
-  color: var(--coral);
+  color: var(--purple);
   -webkit-text-stroke: 4px var(--ink);
   text-shadow: 5px 5px 0 var(--ink);
   line-height: 1;
@@ -789,18 +789,18 @@
 
 /* === KETTINGVRAAG question rotator === */
 .kv-question {
-  background: var(--cream);
-  color: var(--ink);
+  background: var(--purple);
+  color: var(--cream);
   border: 3px solid var(--ink);
   border-radius: var(--r-md);
-  padding: var(--s-3) var(--s-4);
+  padding: var(--s-4);
   box-shadow: var(--shadow-pop);
   font-family: var(--font-display);
   font-size: clamp(20px, 5.6vw, 28px);
   line-height: 1.15;
   text-align: center;
   letter-spacing: -0.01em;
-  min-height: 80px;
+  min-height: 92px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -809,15 +809,15 @@
   animation: kvFlash 360ms var(--ease-pop);
 }
 @keyframes kvFlash {
-  0%   { transform: scale(0.92); background: var(--yellow); }
-  60%  { transform: scale(1.04); background: var(--cream); }
-  100% { transform: scale(1); }
+  0%   { transform: scale(0.92); background: var(--yellow); color: var(--ink); }
+  60%  { transform: scale(1.04); }
+  100% { transform: scale(1); background: var(--purple); color: var(--cream); }
 }
 .kv-pass-label {
   text-align: center;
   font-family: var(--font-display);
   font-size: clamp(28px, 8vw, 44px);
-  color: var(--coral);
+  color: var(--purple);
   -webkit-text-stroke: 3px var(--ink);
   text-shadow: 4px 4px 0 var(--ink);
   animation: pulse 1s infinite;
