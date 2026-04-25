@@ -26,7 +26,7 @@
       container.appendChild(root);
 
       body.appendChild(U.el('div', { class: 'kicker orange', text: 'DE GEKOZENE' }));
-      body.appendChild(U.el('div', { class: 'sociale-reason', text: target }));
+      body.appendChild(U.el('div', { class: 'pass-name', text: target }));
       body.appendChild(U.el('div', { class: 'mlt-question center', text: 'Noem ' + cat }));
       const big = U.el('div', { class: 'guess-num', text: '5' });
       body.appendChild(big);

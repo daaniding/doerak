@@ -39,6 +39,12 @@
   --hero-soft: var(--pink-soft);
   --hero-contrast: var(--lime);
 
+  /* Backward-compat aliases for tokens still used inline in game files */
+  --ink-orange: var(--pink-deep);
+  --ink-cyan:   var(--purple);
+  --ink-bone:   var(--cream);
+  --ink-paper:  var(--ink);
+
   /* Type */
   --font-display: "Bowlby One", "Bowlby One SC", "Anton", sans-serif;
   --font-body:    "Manrope", "Plus Jakarta Sans", system-ui, sans-serif;
@@ -333,23 +339,54 @@ input:focus { border-color: var(--pink); }
   justify-content: space-between;
   padding: var(--s-3) var(--s-4);
   gap: var(--s-2);
+  flex-shrink: 0;
 }
 .topbar .pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
+  padding: 6px 12px;
   background: var(--ink);
   color: var(--lime);
   border: 2.5px solid var(--ink);
   border-radius: var(--r-pill);
   font-family: var(--font-display);
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
   box-shadow: 0 3px 0 0 rgba(0,0,0,0.5);
+  white-space: nowrap;
 }
 .topbar .pill.pink { background: var(--pink); color: var(--cream); }
 .topbar .pill.lime { background: var(--lime); color: var(--ink); }
+
+/* Pause button — proper SVG, square chip */
+.pause-btn {
+  width: 36px; height: 36px;
+  border: 2.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--cream);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 3px 0 0 rgba(0,0,0,0.5);
+  padding: 0;
+  flex-shrink: 0;
+}
+.pause-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 0 rgba(0,0,0,0.5); }
+.pause-btn svg { display: block; }
+
+/* Game-intro hero emoji decoration */
+.game-intro .gname-emoji {
+  font-size: clamp(72px, 18vw, 120px);
+  line-height: 1;
+  filter: drop-shadow(0 6px 0 rgba(0,0,0,0.35));
+  align-self: flex-start;
+  transform: rotate(-6deg);
+  margin-bottom: -8px;
+  user-select: none;
+}
 
 /* Active rules ribbon */
 .rules-ribbon {

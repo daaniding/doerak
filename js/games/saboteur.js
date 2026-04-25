@@ -29,7 +29,7 @@
         if (i >= players.length) return phaseFreeplay();
         const p = players[i];
         body.appendChild(U.el('div', { class: 'kicker', text: 'GEEF DOOR AAN' }));
-        body.appendChild(U.el('div', { class: 'sociale-reason', text: p }));
+        body.appendChild(U.el('div', { class: 'pass-name', text: p }));
         footer.appendChild(U.el('button', {
           class: 'btn full', text: 'TOON MIJN ROL',
           onClick: () => showRole(p)

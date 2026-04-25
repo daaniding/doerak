@@ -50,7 +50,7 @@
         }
       }));
       keypad.appendChild(U.el('button', {
-        class: 'btn danger', text: 'FOUT — ' + drinkWrong.toUpperCase(),
+        class: 'btn danger', text: 'FOUT',
         onClick: () => {
           AudioFX.lose();
           U.flash('fire');
@@ -68,7 +68,7 @@
         body.innerHTML = ''; footer.innerHTML = '';
         AudioFX.win(); U.flash('cyan');
         body.appendChild(U.el('div', { class: 'kicker orange', text: 'DE WINNAAR MAAKT DE REGEL' }));
-        body.appendChild(U.el('div', { class: 'sociale-reason', text: players[turnIdx] }));
+        body.appendChild(U.el('div', { class: 'pass-name', text: players[turnIdx] }));
 
         const quick = U.el('div', { class: 'quick-rules' });
         const suggestions = U.pickN(window.DOERAK_DATA.regelRoulette, 4);

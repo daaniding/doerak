@@ -29,9 +29,9 @@
       function step1() {
         body.innerHTML = ''; footer.innerHTML = '';
         body.appendChild(U.el('div', { class: 'kicker', text: 'GEEF DE TELEFOON AAN' }));
-        body.appendChild(U.el('div', { class: 'sociale-reason', text: target }));
-        body.appendChild(U.el('div', { class: 'paranoia-question', style: { fontSize: '15px', color: 'var(--ink-bone-dim)', textAlign: 'center', marginTop: '24px' },
-          text: 'Lees de vraag in stilte, zeg je antwoord (een naam) hardop. Niemand mag de vraag horen.' }));
+        body.appendChild(U.el('div', { class: 'pass-name', text: target }));
+        body.appendChild(U.el('div', { class: 'body-card',
+          html: 'Lees de vraag in stilte. Zeg je antwoord (een naam) hardop. <strong>Niemand mag de vraag horen.</strong>' }));
         footer.appendChild(U.el('button', {
           class: 'btn full', text: 'IK BEN ' + target,
           onClick: () => { AudioFX.beep(); step2(); }
@@ -41,8 +41,8 @@
       function step2() {
         body.innerHTML = ''; footer.innerHTML = '';
         body.appendChild(U.el('div', { class: 'paranoia-question', text: question }));
-        body.appendChild(U.el('div', { class: 'gh-tag', style: { color: 'var(--ink-cyan)', textAlign: 'center', marginTop: '24px' },
-          text: 'ZEG JE ANTWOORD HARDOP — NOG NIET DOORKLIKKEN' }));
+        body.appendChild(U.el('div', { class: 'kicker pink', style: { alignSelf: 'center' },
+          text: 'ZEG ANTWOORD HARDOP' }));
         footer.appendChild(U.el('button', {
           class: 'btn full', text: 'GEZEGD',
           onClick: () => step3()

@@ -24,7 +24,7 @@
       container.appendChild(root);
 
       body.appendChild(U.el('div', { class: 'kicker orange', text: 'DE GEKOZENE' }));
-      body.appendChild(U.el('div', { class: 'sociale-reason', text: target }));
+      body.appendChild(U.el('div', { class: 'pass-name', text: target }));
       const doors = U.el('div', { class: 'doors' });
       [1, 2, 3].forEach(n => {
         const d = U.el('div', { class: 'door' }, U.el('div', { class: 'num', text: n }));

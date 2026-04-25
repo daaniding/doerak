@@ -31,7 +31,7 @@
         const p = players[i];
         body.appendChild(U.el('div', { class: 'imposter-pass' },
           U.el('div', { class: 'kicker', text: 'GEEF DE TELEFOON AAN' }),
-          U.el('div', { class: 'sociale-reason', text: p })
+          U.el('div', { class: 'pass-name', text: p })
         ));
         footer.appendChild(U.el('button', {
           class: 'btn full', text: 'TOON MIJN WOORD',

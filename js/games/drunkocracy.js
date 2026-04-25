@@ -34,7 +34,7 @@
         if (i >= players.length) return reveal();
         const voter = players[i];
         body.appendChild(U.el('div', { class: 'kicker', text: 'GEHEIM STEMMEN — GEEF DOOR AAN' }));
-        body.appendChild(U.el('div', { class: 'sociale-reason', text: voter }));
+        body.appendChild(U.el('div', { class: 'pass-name', text: voter }));
         footer.appendChild(U.el('button', {
           class: 'btn full', text: 'IK BEN ' + voter,
           onClick: () => doVote(voter)

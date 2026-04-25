@@ -47,7 +47,7 @@
         }
       }));
       actions.appendChild(U.el('button', {
-        class: 'btn danger', text: 'FOUT (' + drinkWrong + ')',
+        class: 'btn danger', text: 'FOUT',
         onClick: () => {
           AudioFX.lose(); U.flash('fire');
           count = 1;
